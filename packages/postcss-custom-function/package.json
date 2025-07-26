@@ -1,5 +1,5 @@
 {
-  "name": "postcss-custom-functions",
+  "name": "postcss-custom-function",
   "version": "0.0.0",
   "type": "module",
   "description": "PostCSS plugin for transforming CSS Custom Function functions to native CSS",
@@ -54,7 +54,7 @@
     "postcss": "8.0.0"
   },
   "dependencies": {
-    "css-custom-functions-polyfill": "0.1.3"
+    "css-custom-functions-polyfill": "0.0.0"
   },
   "devDependencies": {
     "microbundle": "0.15.1",

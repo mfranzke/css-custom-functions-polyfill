@@ -35,7 +35,7 @@
 
 import { buildTimeTransform } from 'css-custom-functions-polyfill';
 
-const PLUGIN_NAME = 'postcss-custom-functions';
+const PLUGIN_NAME = 'postcss-custom-function';
 
 /**
  * PostCSS plugin options

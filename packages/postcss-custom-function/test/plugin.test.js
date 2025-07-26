@@ -7,7 +7,7 @@ import {
 } from '../../../test/scripts/fixture-utils.js';
 import { postcssIfFunction } from '../src/index.js';
 
-describe('postcss-custom-functions plugin', () => {
+describe('postcss-custom-function plugin', () => {
 	async function run(input, output, options = {}) {
 		const result = await postcss([postcssIfFunction(options)]).process(
 			input,
@@ -36,7 +36,7 @@ describe('postcss-custom-functions plugin', () => {
 		await run(input, expected, { logTransformations: true });
 
 		expect(logSpy).toHaveBeenCalledWith(
-			'[postcss-custom-functions] Transformation statistics:'
+			'[postcss-custom-function] Transformation statistics:'
 		);
 		expect(
 			logSpy.mock.calls.some((call) =>

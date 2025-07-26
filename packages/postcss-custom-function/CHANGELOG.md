@@ -1,4 +1,4 @@
-# postcss-custom-functions
+# postcss-custom-function
 
 ## 0.1.3
 
