@@ -81,7 +81,7 @@ jobs:
           name: dist
           path: |
             packages/css-custom-functions-polyfill/dist
-            packages/postcss-if-function/dist
+            packages/postcss-custom-functions/dist
           retention-days: 30
 
       - name: Upload examples

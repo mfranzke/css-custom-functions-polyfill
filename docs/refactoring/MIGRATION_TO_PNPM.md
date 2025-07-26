@@ -13,7 +13,7 @@ This document summarizes the changes made to migrate the css-custom-functions-po
 
 - **Root package.json**: Updated packageManager field and scripts to use pnpm
 - **css-custom-functions-polyfill/package.json**: Updated scripts to use pnpm
-- **postcss-if-function/package.json**: Updated scripts to use pnpm
+- **postcss-custom-functions/package.json**: Updated scripts to use pnpm
 
 ### GitHub Workflows Updated
 

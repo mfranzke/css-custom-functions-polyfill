@@ -1,7 +1,7 @@
-# postcss-if-function
+# postcss-custom-functions
 
 [![Default CI/CD Pipeline](https://github.com/mfranzke/css-custom-functions-polyfill/actions/workflows/default.yml/badge.svg)](https://github.com/mfranzke/css-custom-functions-polyfill/actions/workflows/default.yml)
-[![npm version](https://badge.fury.io/js/postcss-if-function.svg)](https://badge.fury.io/js/postcss-if-function)
+[![npm version](https://badge.fury.io/js/postcss-custom-functions.svg)](https://badge.fury.io/js/postcss-custom-functions)
 [![Build Status](https://github.com/mfranzke/css-custom-functions-polyfill/workflows/CI/badge.svg)](https://github.com/mfranzke/css-custom-functions-polyfill/actions)
 
 A [PostCSS](https://postcss.org/) plugin for transforming CSS `if()` functions into native CSS `@media` and `@supports` rules at build time.
@@ -11,7 +11,7 @@ This plugin is part of the [css-custom-functions-polyfill](https://github.com/mf
 ## Installation
 
 ```bash
-npm install postcss-if-function postcss
+npm install postcss-custom-functions postcss
 ```
 
 ## Usage
@@ -20,7 +20,7 @@ npm install postcss-if-function postcss
 
 ```bash
 # Transform CSS using PostCSS CLI
-npx postcss input.css --output output.css --use postcss-if-function
+npx postcss input.css --output output.css --use postcss-custom-functions
 
 # With custom PostCSS config file
 npx postcss input.css --output output.css --config postcss.config.js
@@ -31,11 +31,11 @@ npx postcss input.css --output output.css --config postcss.config.js
 ```js
 // Named export (recommended)
 import postcss from "postcss";
-import { postcssIfFunction } from "postcss-if-function";
+import { postcssIfFunction } from "postcss-custom-functions";
 
 // Or default export (for compatibility)
 import postcss from "postcss";
-import postcssIfFunction from "postcss-if-function";
+import postcssIfFunction from "postcss-custom-functions";
 
 const css = `
 .example {
@@ -88,7 +88,7 @@ const result = await postcss([
 
 ```js
 // postcss.config.js
-import { postcssIfFunction } from "postcss-if-function";
+import { postcssIfFunction } from "postcss-custom-functions";
 
 export default {
 	plugins: [
@@ -106,7 +106,7 @@ export default {
 ```js
 // vite.config.js
 import { defineConfig } from "vite";
-import { postcssIfFunction } from "postcss-if-function";
+import { postcssIfFunction } from "postcss-custom-functions";
 
 export default defineConfig({
 	css: {
@@ -139,7 +139,7 @@ module.exports = {
 							postcssOptions: {
 								plugins: [
 									[
-										"postcss-if-function",
+										"postcss-custom-functions",
 										{
 											logTransformations: true
 										}
@@ -163,7 +163,7 @@ module.exports = {
 	experimental: {
 		postcss: {
 			plugins: {
-				"postcss-if-function": {
+				"postcss-custom-functions": {
 					logTransformations: process.env.NODE_ENV === "development"
 				}
 			}

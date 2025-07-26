@@ -1,4 +1,4 @@
-# postcss-if-function
+# postcss-custom-functions
 
 ## 0.1.3
 

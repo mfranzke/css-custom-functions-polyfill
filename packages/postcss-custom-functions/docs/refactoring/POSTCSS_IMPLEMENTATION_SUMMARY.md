@@ -7,11 +7,11 @@
 - Converted from single package to npm workspaces monorepo
 - Created two distinct packages:
     - `packages/css-custom-functions-polyfill/` - Core polyfill with runtime + build-time processing
-    - `packages/postcss-if-function/` - PostCSS plugin for build-time transformation
+    - `packages/postcss-custom-functions/` - PostCSS plugin for build-time transformation
 
 ### 2. **PostCSS Plugin Development**
 
-- **File**: `packages/postcss-if-function/src/index.js`
+- **File**: `packages/postcss-custom-functions/src/index.js`
 - **Features**:
     - Integrates with PostCSS ecosystem
     - Uses the css-custom-functions-polyfill transformation engine
@@ -45,7 +45,7 @@
 ### **Core Functionality**
 
 ```js
-import { postcssIfFunction } from "postcss-if-function";
+import { postcssIfFunction } from "postcss-custom-functions";
 
 const result = await postcss([
 	postcssIfFunction({
@@ -111,7 +111,7 @@ css-custom-functions-polyfill/
 │   │   ├── package.json
 │   │   └── README.md
 │   │
-│   └── postcss-if-function/           # PostCSS plugin package
+│   └── postcss-custom-functions/           # PostCSS plugin package
 │       ├── src/
 │       │   ├── index.js          # PostCSS plugin implementation
 │       │   └── index.d.ts        # TypeScript definitions
@@ -199,7 +199,7 @@ Use PostCSS for static conditions + runtime polyfill for dynamic ones:
 ### **Building Both Packages**
 
 ```bash
-npm run build  # Builds both css-custom-functions-polyfill and postcss-if-function
+npm run build  # Builds both css-custom-functions-polyfill and postcss-custom-functions
 ```
 
 ### **Testing**
@@ -211,7 +211,7 @@ npm test  # Runs tests for both packages
 ### **Working with Individual Packages**
 
 ```bash
-npm run build --workspace=postcss-if-function
+npm run build --workspace=postcss-custom-functions
 npm run test --workspace=css-custom-functions-polyfill
 ```
 
@@ -226,4 +226,4 @@ We have successfully:
 5. **✅ Provided flexible integration options** for different build tools
 6. **✅ Optimized performance** with build-time transformation capabilities
 
-The PostCSS plugin (`postcss-if-function`) now provides a complete build-time solution for transforming CSS Custom Function functions, while the core polyfill (`css-custom-functions-polyfill`) continues to provide runtime processing for dynamic conditions. This hybrid approach offers the best of both worlds: optimal performance for static conditions and full functionality for dynamic styling needs.
+The PostCSS plugin (`postcss-custom-functions`) now provides a complete build-time solution for transforming CSS Custom Function functions, while the core polyfill (`css-custom-functions-polyfill`) continues to provide runtime processing for dynamic conditions. This hybrid approach offers the best of both worlds: optimal performance for static conditions and full functionality for dynamic styling needs.

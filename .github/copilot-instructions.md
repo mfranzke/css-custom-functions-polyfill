@@ -442,7 +442,7 @@ The value of the [`result`](https://drafts.csswg.org/css-mixins-1/#descdef-funct
 ### Core Packages
 
 - `packages/css-custom-functions-polyfill/` - Main JavaScript polyfill
-- `packages/postcss-if-function/` - PostCSS plugin for build-time transformation
+- `packages/postcss-custom-functions/` - PostCSS plugin for build-time transformation
 
 ### Key Files
 
