@@ -1,6 +1,7 @@
 /* Function with conditional rules (media queries) */
 @function --suitable-font-size() {
 	result: 16px;
+
 	@media (width > 1000px) {
 		result: 20px;
 	}
