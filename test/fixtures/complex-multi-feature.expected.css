@@ -4,17 +4,17 @@
 	--flex-direction: var(--direction);
 	--flex-wrap: var(--wrap);
 	--gap: var(--gap);
-	
+
 	@media (width < 768px) {
 		--flex-direction: column;
 		--gap: 0.5rem;
 	}
-	
+
 	@supports (display: grid) {
 		--display: grid;
 		--gap: var(--gap);
 	}
-	
+
 	result: {
 		display: var(--display);
 		flex-direction: var(--flex-direction);
