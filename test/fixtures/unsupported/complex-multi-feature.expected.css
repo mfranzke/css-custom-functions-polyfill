@@ -1,0 +1,33 @@
+/* Complex function with multiple features */
+/* @function --complex-spacing(--base <length>: 1rem) {
+	--small: calc(var(--base) * 0.5);
+	--large: calc(var(--base) * 2);
+
+	@media (width < 768px) {
+		--small: calc(var(--base) * 0.25);
+		--large: var(--base);
+	}
+
+	result: var(--large);
+}
+
+@function --flex-direction-responsive() {
+	result: row;
+	@media (width < 768px) {
+		result: column;
+	}
+} */
+
+.container {
+	gap: calc(2rem * 2);
+	flex-direction: row;
+	padding: calc(1rem * 2);
+}
+
+@media (width < 768px) {
+	.container {
+		gap: 2rem;
+		flex-direction: column;
+		padding: 1rem;
+	}
+}
