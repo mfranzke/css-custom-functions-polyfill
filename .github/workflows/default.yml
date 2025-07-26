@@ -97,7 +97,7 @@ jobs:
         with:
           name: coverage-reports
           path: |
-            packages/css-if-polyfill/coverage/
+            packages/css-custom-functions-polyfill/coverage/
             packages/postcss-if-function/coverage/
           retention-days: 30
 

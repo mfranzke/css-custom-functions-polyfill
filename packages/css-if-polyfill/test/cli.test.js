@@ -60,7 +60,9 @@ describe('CLI Tool', () => {
 	test('shows help when no arguments provided', async () => {
 		const { stdout } = await execAsync('node bin/cli.js --help');
 
-		expect(stdout).toContain('CSS if() Build-time Transformation CLI');
+		expect(stdout).toContain(
+			'CSS Custom Function Build-time Transformation CLI'
+		);
 		expect(stdout).toContain('Usage:');
 		expect(stdout).toContain('Options:');
 	});

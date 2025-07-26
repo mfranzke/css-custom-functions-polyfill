@@ -36,9 +36,9 @@ And the commit messages from [Conventional Commits](https://conventionalcommits.
 - 🐛 Fixed edge cases with quoted values and nested parentheses
 - 📚 Added comprehensive examples and documentation
 - 🧪 Expanded test suite to cover new features
-- Initial release with full CSS if() support
+- Initial release with full CSS Custom Function support
 - Support for media(), supports(), and style() functions
 - Comprehensive test suite
 - TypeScript definitions
 - Multiple build formats
-- Correct CSS if() syntax with colon separators and else keyword
+- Correct CSS Custom Function syntax with colon separators and else keyword

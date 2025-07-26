@@ -1,4 +1,4 @@
-# CSS if() Polyfill Test Fixtures
+# CSS Custom Functions polyfill Test Fixtures
 
 This document demonstrates the centralized test fixture system that provides a single source of truth for CSS test cases across all test suites.
 

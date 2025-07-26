@@ -1,10 +1,10 @@
-# Integration Guide: CSS if() Polyfill v0.1
+# Integration Guide: CSS Custom Functions polyfill v0.1
 
-This document describes the major architectural improvements and integration of build-time CSS transformation capabilities into the CSS if() polyfill.
+This document describes the major architectural improvements and integration of build-time CSS transformation capabilities into the CSS Custom Functions polyfill.
 
 ## 🎯 Overview
 
-The CSS if() polyfill now offers **two complementary approaches**:
+The CSS Custom Functions polyfill now offers **two complementary approaches**:
 
 1. **Runtime Polyfill** - Traditional JavaScript-based processing for dynamic conditions
 2. **Build-time Transformation** - Static CSS transformation to native `@media` and `@supports` rules
@@ -81,19 +81,19 @@ graph TD
 
 ```bash
 # Transform CSS file
-npx css-if-polyfill input.css output.css
+npx css-custom-functions-polyfill input.css output.css
 
 # With minification and stats
-npx css-if-polyfill input.css output.css --minify --stats
+npx css-custom-functions-polyfill input.css output.css --minify --stats
 
 # Output to stdout
-npx css-if-polyfill input.css --stats
+npx css-custom-functions-polyfill input.css --stats
 ```
 
 #### Programmatic Usage
 
 ```javascript
-import { buildTimeTransform } from "css-if-polyfill";
+import { buildTimeTransform } from "css-custom-functions-polyfill";
 
 const css = `
   .button {
@@ -114,7 +114,7 @@ console.log("Needs runtime?", result.hasRuntimeRules);
 #### Enhanced Polyfill
 
 ```javascript
-import { init } from "css-if-polyfill";
+import { init } from "css-custom-functions-polyfill";
 
 // Initialize with native transformation
 init({
@@ -189,7 +189,7 @@ Existing code continues to work without modifications:
 
 ```javascript
 // v0.0 code - still works
-import { init } from "css-if-polyfill";
+import { init } from "css-custom-functions-polyfill";
 init();
 ```
 
@@ -202,7 +202,7 @@ Enable new features gradually:
 init({ useNativeTransform: true });
 
 // Use build-time transformation
-import { buildTimeTransform } from "css-if-polyfill";
+import { buildTimeTransform } from "css-custom-functions-polyfill";
 const result = buildTimeTransform(cssText);
 ```
 
@@ -212,7 +212,7 @@ const result = buildTimeTransform(cssText);
 
 ```javascript
 // webpack.config.js
-const { buildTimeTransform } = require("css-if-polyfill");
+const { buildTimeTransform } = require("css-custom-functions-polyfill");
 
 module.exports = {
 	module: {
@@ -256,12 +256,12 @@ module.exports = {
 
 ```javascript
 // vite.config.js
-import { buildTimeTransform } from "css-if-polyfill";
+import { buildTimeTransform } from "css-custom-functions-polyfill";
 
 export default {
 	plugins: [
 		{
-			name: "css-if-polyfill",
+			name: "css-custom-functions-polyfill",
 			transform(code, id) {
 				if (id.endsWith(".css")) {
 					const result = buildTimeTransform(code);
@@ -316,4 +316,4 @@ export default {
 
 ---
 
-This integration represents a significant evolution of the CSS if() polyfill, providing both immediate performance benefits and a clear path toward future CSS standards adoption.
+This integration represents a significant evolution of the CSS Custom Functions polyfill, providing both immediate performance benefits and a clear path toward future CSS standards adoption.

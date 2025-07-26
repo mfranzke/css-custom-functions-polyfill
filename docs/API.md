@@ -1,9 +1,9 @@
-# CSS if() Polyfill v2.0 API Documentation
+# CSS Custom Functions polyfill v2.0 API Documentation
 
 ## Installation
 
 ```bash
-npm install css-if-polyfill
+npm install css-custom-functions-polyfill
 ```
 
 ## CDN Usage
@@ -11,14 +11,14 @@ npm install css-if-polyfill
 ```html
 <script
 	type="module"
-	src="https://cdn.jsdelivr.net/npm/css-if-polyfill/dist/index.modern.js"
+	src="https://cdn.jsdelivr.net/npm/css-custom-functions-polyfill/dist/index.modern.js"
 ></script>
 ```
 
 ## ESM Import
 
 ```javascript
-import { init } from "css-if-polyfill";
+import { init } from "css-custom-functions-polyfill";
 
 // Initialize the polyfill
 init();
@@ -27,7 +27,7 @@ init();
 ## CommonJS Require
 
 ```javascript
-const { init } = require("css-if-polyfill");
+const { init } = require("css-custom-functions-polyfill");
 
 // Initialize the polyfill
 init();
@@ -39,7 +39,7 @@ init();
 
 #### `init(options?)`
 
-Initializes the CSS if() polyfill with optional configuration.
+Initializes the CSS Custom Functions polyfill with optional configuration.
 
 **Parameters:**
 
@@ -81,7 +81,7 @@ const processedCSS = CSSIfPolyfill.processCSSText(`
 
 #### `hasNativeSupport()`
 
-Check if the browser has native CSS if() support.
+Check if the browser has native CSS Custom Function support.
 
 **Returns:** boolean
 
@@ -144,7 +144,7 @@ Transform CSS at build time to generate native CSS where possible.
 **Example:**
 
 ```javascript
-import { buildTimeTransform } from "css-if-polyfill";
+import { buildTimeTransform } from "css-custom-functions-polyfill";
 
 const result = buildTimeTransform(
 	`
@@ -166,7 +166,7 @@ console.log("Needs polyfill:", result.hasRuntimeRules);
 The package includes a command-line tool for build-time transformation:
 
 ```bash
-npx css-if-polyfill input.css output.css [options]
+npx css-custom-functions-polyfill input.css output.css [options]
 ```
 
 ### CLI Options
@@ -179,13 +179,13 @@ npx css-if-polyfill input.css output.css [options]
 
 ```bash
 # Basic transformation
-npx css-if-polyfill styles.css optimized.css
+npx css-custom-functions-polyfill styles.css optimized.css
 
 # With minification and statistics
-npx css-if-polyfill styles.css optimized.css --minify --stats
+npx css-custom-functions-polyfill styles.css optimized.css --minify --stats
 
 # Output to stdout with stats
-npx css-if-polyfill styles.css --stats
+npx css-custom-functions-polyfill styles.css --stats
 ```
 
 ## CSS Syntax
@@ -309,7 +309,7 @@ import {
 	buildTimeTransform,
 	type CssIfPolyfillOptions,
 	type TransformResult
-} from "css-if-polyfill";
+} from "css-custom-functions-polyfill";
 
 const options: CssIfPolyfillOptions = {
 	debug: true,
@@ -337,7 +337,7 @@ Existing v1.x code continues to work without modifications:
 
 ```javascript
 // v1.x code - still works
-import { init } from "css-if-polyfill";
+import { init } from "css-custom-functions-polyfill";
 init();
 ```
 
@@ -348,7 +348,7 @@ init();
 init({ useNativeTransform: true });
 
 // Use build-time transformation
-import { buildTimeTransform } from "css-if-polyfill";
+import { buildTimeTransform } from "css-custom-functions-polyfill";
 const optimized = buildTimeTransform(cssText);
 ```
 

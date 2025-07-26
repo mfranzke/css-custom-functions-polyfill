@@ -9,7 +9,7 @@ Successfully refactored CSS test data from scattered inline strings across multi
 ### **Before: Scattered Test Data**
 
 ```text
-packages/css-if-polyfill/test/
+packages/css-custom-functions-polyfill/test/
 ├── polyfill.test.js          // CSS strings inline
 ├── integrated.test.js        // CSS strings inline
 ├── multiple-conditions.test.js // CSS strings inline
@@ -259,4 +259,4 @@ The fixture system integrates seamlessly with the existing CI/CD pipeline:
 
 ---
 
-**This refactoring establishes a robust, scalable foundation for maintaining CSS test data across the entire `css-if-polyfill` project while dramatically improving developer experience and documentation quality.**
+**This refactoring establishes a robust, scalable foundation for maintaining CSS test data across the entire `css-custom-functions-polyfill` project while dramatically improving developer experience and documentation quality.**

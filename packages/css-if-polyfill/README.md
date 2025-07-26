@@ -1,12 +1,12 @@
-# CSS if() Function Polyfill v0.1
+# CSS Custom Function Function Polyfill v0.1
 
-[![MIT license](https://img.shields.io/npm/l/css-if-polyfill.svg "license badge")](https://opensource.org/licenses/mit-license.php)
+[![MIT license](https://img.shields.io/npm/l/css-custom-functions-polyfill.svg "license badge")](https://opensource.org/licenses/mit-license.php)
 
-[![Default CI/CD Pipeline](https://github.com/mfranzke/css-if-polyfill/actions/workflows/default.yml/badge.svg)](https://github.com/mfranzke/css-if-polyfill/actions/workflows/default.yml)
-[![Total downloads ~ Npmjs](https://img.shields.io/npm/dt/css-if-polyfill.svg "Count of total downloads – NPM")](https://npmjs.com/package/css-if-polyfill "CSS if() function polyfill – on NPM")
-[![jsDelivr CDN downloads](https://data.jsdelivr.com/v1/package/npm/css-if-polyfill/badge "Count of total downloads – jsDelivr")](https://www.jsdelivr.com/package/npm/css-if-polyfill "CSS if() function polyfill – on jsDelivr")
+[![Default CI/CD Pipeline](https://github.com/mfranzke/css-custom-functions-polyfill/actions/workflows/default.yml/badge.svg)](https://github.com/mfranzke/css-custom-functions-polyfill/actions/workflows/default.yml)
+[![Total downloads ~ Npmjs](https://img.shields.io/npm/dt/css-custom-functions-polyfill.svg "Count of total downloads – NPM")](https://npmjs.com/package/css-custom-functions-polyfill "CSS Custom Function function polyfill – on NPM")
+[![jsDelivr CDN downloads](https://data.jsdelivr.com/v1/package/npm/css-custom-functions-polyfill/badge "Count of total downloads – jsDelivr")](https://www.jsdelivr.com/package/npm/css-custom-functions-polyfill "CSS Custom Function function polyfill – on jsDelivr")
 
-[![css-if-polyfill on Npmjs](https://img.shields.io/npm/v/css-if-polyfill.svg?color=rgb%28237%2C%2028%2C%2036%29 "npm version")](https://npmjs.com/package/css-if-polyfill "CSS if() function polyfill – on NPM")
+[![css-custom-functions-polyfill on Npmjs](https://img.shields.io/npm/v/css-custom-functions-polyfill.svg?color=rgb%28237%2C%2028%2C%2036%29 "npm version")](https://npmjs.com/package/css-custom-functions-polyfill "CSS Custom Function function polyfill – on NPM")
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 [![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/xojs/xo)
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
@@ -44,7 +44,7 @@ A modern JavaScript polyfill for the [CSS `if()` function](https://developer.moz
 ## Installation
 
 ```bash
-npm install css-if-polyfill
+npm install css-custom-functions-polyfill
 ```
 
 ## Quick Start
@@ -53,13 +53,13 @@ npm install css-if-polyfill
 
 ```bash
 # Transform CSS during build
-npx css-if-polyfill input.css output.css --minify --stats
+npx css-custom-functions-polyfill input.css output.css --minify --stats
 ```
 
 ### Runtime Processing
 
 ```javascript
-import { init } from "css-if-polyfill";
+import { init } from "css-custom-functions-polyfill";
 
 // Initialize with hybrid processing
 init({ useNativeTransform: true });
@@ -72,19 +72,19 @@ init({ useNativeTransform: true });
 Simply import the polyfill and it will automatically initialize:
 
 ```javascript
-import "css-if-polyfill";
+import "css-custom-functions-polyfill";
 ```
 
 Or include it via script tag:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/css-if-polyfill/dist/index.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/css-custom-functions-polyfill/dist/index.umd.min.js"></script>
 ```
 
 ### Manual Initialization
 
 ```javascript
-import { init } from "css-if-polyfill";
+import { init } from "css-custom-functions-polyfill";
 
 // Initialize with options
 const polyfill = init({
@@ -96,16 +96,16 @@ const polyfill = init({
 ### Processing CSS Text
 
 ```javascript
-import { processCSSText } from "css-if-polyfill";
+import { processCSSText } from "css-custom-functions-polyfill";
 
 const css = ".button { color: if(media(width >= 768px): blue; else: red); }";
 const processed = processCSSText(css);
 console.log(processed); // .button { color: red; } @media(width >= 768px) { .button { color: blue; } }
 ```
 
-## CSS if() Syntax
+## CSS Custom Function Syntax
 
-The polyfill supports the following CSS if() syntax:
+The polyfill supports the following CSS Custom Function syntax:
 
 ```css
 property: if(condition: value; else: value-if-false);
@@ -307,7 +307,7 @@ const processed = processCSSText(`
 
 ### `hasNativeSupport()`
 
-Check if the browser has native CSS if() support.
+Check if the browser has native CSS Custom Function support.
 
 ```javascript
 if (hasNativeSupport()) {
@@ -348,7 +348,7 @@ The polyfill works in all modern browsers that support:
 
 ## Performance Considerations
 
-- The polyfill only activates when native CSS if() support is not available
+- The polyfill only activates when native CSS Custom Function support is not available
 - Uses efficient CSS parsing with minimal DOM manipulation
 - Caches evaluation results for better performance
 - Processes stylesheets incrementally to avoid blocking
@@ -358,14 +358,14 @@ The polyfill works in all modern browsers that support:
 
 The package includes comprehensive examples:
 
-- `examples/index.html` - Basic CSS if() usage
+- `examples/index.html` - Basic CSS Custom Function usage
 - `examples/advanced.html` - Advanced conditional styling
 - `examples/enhanced.html` - Multiple if-tests and shorthand properties
 - `examples/multiple-conditions.html` - Multiple conditions within single if()
 
 ## Contributing
 
-Please have a look at our [CONTRIBUTION guidelines](https://github.com/mfranzke/css-if-polyfill/blob/main/CONTRIBUTING.md).
+Please have a look at our [CONTRIBUTION guidelines](https://github.com/mfranzke/css-custom-functions-polyfill/blob/main/CONTRIBUTING.md).
 
 ## License
 
@@ -379,5 +379,5 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ## Related
 
-- [postcss-if-function](https://github.com/mfranzke/css-if-polyfill/tree/main/packages/postcss-if-function/) - PostCSS plugin for build-time transformation
+- [postcss-if-function](https://github.com/mfranzke/css-custom-functions-polyfill/tree/main/packages/postcss-if-function/) - PostCSS plugin for build-time transformation
 - [CSS Conditional Rules](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_conditional_rules) - MDN documentation for @media and @supports

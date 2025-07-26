@@ -1,8 +1,8 @@
 /**
- * PostCSS plugin for transforming CSS if() functions to native CSS
+ * PostCSS plugin for transforming CSS Custom Function functions to native CSS
  *
- * This plugin transforms CSS if() functions into native @media and @supports rules
- * using the css-if-polyfill transformation engine.
+ * This plugin transforms CSS Custom Function functions into native @media and @supports rules
+ * using the css-custom-functions-polyfill transformation engine.
  *
  * @example
  * // Input CSS:
@@ -33,7 +33,7 @@
  * }
  */
 
-import { buildTimeTransform } from 'css-if-polyfill';
+import { buildTimeTransform } from 'css-custom-functions-polyfill';
 
 const PLUGIN_NAME = 'postcss-if-function';
 
@@ -46,7 +46,7 @@ const PLUGIN_NAME = 'postcss-if-function';
  */
 
 /**
- * Creates the PostCSS CSS if() plugin
+ * Creates the PostCSS CSS Custom Function plugin
  * @param {PluginOptions} [options={}] - Plugin configuration options
  * @returns {Object} PostCSS plugin
  */

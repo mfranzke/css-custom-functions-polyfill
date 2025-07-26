@@ -6,7 +6,7 @@ import {
 } from '../../../test/scripts/fixture-utils.js';
 import { buildTimeTransform, init, processCSSText } from '../src/index.js';
 
-describe('Integrated CSS if() Polyfill', () => {
+describe('Integrated CSS Custom Functions polyfill', () => {
 	beforeEach(() => {
 		// Initialize with native transformation enabled
 		init({

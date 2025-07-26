@@ -1,6 +1,6 @@
 /**
- * CSS if() Function Polyfill
- * Provides support for CSS if() function with style(), media(), and supports() conditions
+ * CSS Custom Function Function Polyfill
+ * Provides support for CSS Custom Function function with style(), media(), and supports() conditions
  * Syntax: if(condition: value; else: fallback-value)
  * Supports multiple conditions within a single if() and usage within CSS shorthand properties
  */
@@ -25,12 +25,12 @@ const mediaQueryListeners = new Map(); // MediaQuery -> MediaQueryList
  */
 const log = (...arguments_) => {
 	if (polyfillOptions.debug) {
-		console.log('[CSS if() Polyfill]', ...arguments_);
+		console.log('[CSS Custom Functions polyfill]', ...arguments_);
 	}
 };
 
 /**
- * Check if browser has native CSS if() support
+ * Check if browser has native CSS Custom Function support
  */
 const hasNativeSupport = () => {
 	if (globalThis.window === undefined || !globalThis.CSS) {
@@ -38,7 +38,7 @@ const hasNativeSupport = () => {
 	}
 
 	try {
-		// Test if CSS if() function is supported by testing a specific CSS if() syntax
+		// Test if CSS Custom Function function is supported by testing a specific CSS Custom Function syntax
 		return globalThis.CSS.supports(
 			'color',
 			'if(style(--true): red; else: blue)'
@@ -466,7 +466,7 @@ const processCSSText = (cssText, options = {}, element = null) => {
 
 				// If we have runtime rules that need processing, continue with polyfill
 				if (transformResult.hasRuntimeRules) {
-					// Use processed CSS if available, otherwise continue with original
+					// Use processed CSS Custom Function available, otherwise continue with original
 					cssText = transformResult.processedCSS || cssText;
 				} else {
 					// All transformations were native, return original CSS
@@ -556,7 +556,7 @@ const processStyleElement = (styleElement) => {
 const processExistingStylesheets = () => {
 	// Process inline style elements
 	const styleElements = document.querySelectorAll(
-		'style:not([data-css-if-polyfill-processed])'
+		'style:not([data-css-custom-functions-polyfill-processed])'
 	);
 	log(`Found ${styleElements.length} unprocessed style elements`);
 
@@ -774,18 +774,20 @@ const observeStylesheetChanges = () => {
  */
 const init = (options = {}) => {
 	if (globalThis.window === undefined) {
-		throw new TypeError('CSS if() polyfill requires a browser environment');
+		throw new TypeError(
+			'CSS Custom Functions polyfill requires a browser environment'
+		);
 	}
 
 	// Update global options
 	polyfillOptions = { ...polyfillOptions, ...options };
 
 	if (hasNativeSupport()) {
-		log('Native CSS if() support detected, polyfill not needed');
+		log('Native CSS Custom Function support detected, polyfill not needed');
 		return;
 	}
 
-	log('Initializing CSS if() polyfill');
+	log('Initializing CSS Custom Functions polyfill');
 	processExistingStylesheets();
 	observeStylesheetChanges();
 };

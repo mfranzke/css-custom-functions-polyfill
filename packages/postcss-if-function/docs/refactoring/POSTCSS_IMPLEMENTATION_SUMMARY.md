@@ -1,4 +1,4 @@
-# CSS if() Polyfill - PostCSS Plugin Implementation Summary
+# CSS Custom Functions polyfill - PostCSS Plugin Implementation Summary
 
 ## ✅ What We've Accomplished
 
@@ -6,7 +6,7 @@
 
 - Converted from single package to npm workspaces monorepo
 - Created two distinct packages:
-    - `packages/css-if-polyfill/` - Core polyfill with runtime + build-time processing
+    - `packages/css-custom-functions-polyfill/` - Core polyfill with runtime + build-time processing
     - `packages/postcss-if-function/` - PostCSS plugin for build-time transformation
 
 ### 2. **PostCSS Plugin Development**
@@ -14,9 +14,9 @@
 - **File**: `packages/postcss-if-function/src/index.js`
 - **Features**:
     - Integrates with PostCSS ecosystem
-    - Uses the css-if-polyfill transformation engine
+    - Uses the css-custom-functions-polyfill transformation engine
     - Supports plugin options (logTransformations, preserveOriginal, skipSelectors)
-    - Transforms CSS if() functions to native @media/@supports rules
+    - Transforms CSS Custom Function functions to native @media/@supports rules
     - Complete error handling and validation
 
 ### 3. **Plugin Configuration**
@@ -99,9 +99,9 @@ const result = await postcss([
 ## 📂 Project Structure
 
 ```text
-css-if-polyfill/
+css-custom-functions-polyfill/
 ├── packages/
-│   ├── css-if-polyfill/           # Core polyfill package
+│   ├── css-custom-functions-polyfill/           # Core polyfill package
 │   │   ├── src/
 │   │   │   ├── index.js           # Main polyfill with hybrid processing
 │   │   │   ├── transform.js       # Transformation engine
@@ -199,7 +199,7 @@ Use PostCSS for static conditions + runtime polyfill for dynamic ones:
 ### **Building Both Packages**
 
 ```bash
-npm run build  # Builds both css-if-polyfill and postcss-if-function
+npm run build  # Builds both css-custom-functions-polyfill and postcss-if-function
 ```
 
 ### **Testing**
@@ -212,18 +212,18 @@ npm test  # Runs tests for both packages
 
 ```bash
 npm run build --workspace=postcss-if-function
-npm run test --workspace=css-if-polyfill
+npm run test --workspace=css-custom-functions-polyfill
 ```
 
 ## 🎉 Summary
 
 We have successfully:
 
-1. **✅ Created a PostCSS plugin** that transforms CSS if() functions to native CSS
+1. **✅ Created a PostCSS plugin** that transforms CSS Custom Function functions to native CSS
 2. **✅ Implemented workspace structure** for better package organization
 3. **✅ Maintained backward compatibility** with the existing polyfill
 4. **✅ Added comprehensive documentation** and examples
 5. **✅ Provided flexible integration options** for different build tools
 6. **✅ Optimized performance** with build-time transformation capabilities
 
-The PostCSS plugin (`postcss-if-function`) now provides a complete build-time solution for transforming CSS if() functions, while the core polyfill (`css-if-polyfill`) continues to provide runtime processing for dynamic conditions. This hybrid approach offers the best of both worlds: optimal performance for static conditions and full functionality for dynamic styling needs.
+The PostCSS plugin (`postcss-if-function`) now provides a complete build-time solution for transforming CSS Custom Function functions, while the core polyfill (`css-custom-functions-polyfill`) continues to provide runtime processing for dynamic conditions. This hybrid approach offers the best of both worlds: optimal performance for static conditions and full functionality for dynamic styling needs.

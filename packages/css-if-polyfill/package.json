@@ -1,19 +1,19 @@
 {
-  "name": "css-if-polyfill",
+  "name": "css-custom-functions-polyfill",
   "version": "0.1.3",
   "type": "module",
-  "description": "A JavaScript polyfill for CSS if() functionality with style(), media(), and supports() functions",
+  "description": "A JavaScript polyfill for CSS Custom Function functionality with style(), media(), and supports() functions",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mfranzke/css-if-polyfill.git"
+    "url": "git+https://github.com/mfranzke/css-custom-functions-polyfill.git"
   },
-  "homepage": "https://mfranzke.github.io/css-if-polyfill/",
+  "homepage": "https://mfranzke.github.io/css-custom-functions-polyfill/",
   "bugs": {
-    "url": "https://github.com/mfranzke/css-if-polyfill/issues"
+    "url": "https://github.com/mfranzke/css-custom-functions-polyfill/issues"
   },
   "license": "MIT",
   "bin": {
-    "css-if-polyfill": "bin/cli.js"
+    "css-custom-functions-polyfill": "bin/cli.js"
   },
   "main": "dist/index.cjs",
   "types": "dist/index.d.ts",

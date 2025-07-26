@@ -1,4 +1,4 @@
-# CSS if() Polyfill Integration Summary
+# CSS Custom Functions polyfill Integration Summary
 
 ## ✅ Successfully Completed
 
@@ -114,7 +114,7 @@
 ### 1. Build-time Only (Optimal Performance)
 
 ```bash
-npx css-if-polyfill input.css output.css --minify
+npx css-custom-functions-polyfill input.css output.css --minify
 ```
 
 ### 2. Hybrid Mode (Best Flexibility)
@@ -158,7 +158,7 @@ init();
 
 ## ✨ Summary
 
-The CSS if() polyfill has been successfully modernized with a hybrid approach that:
+The CSS Custom Functions polyfill has been successfully modernized with a hybrid approach that:
 
 1. **Maximizes Performance** - Native CSS for transformable conditions
 2. **Maintains Flexibility** - Runtime processing for dynamic conditions

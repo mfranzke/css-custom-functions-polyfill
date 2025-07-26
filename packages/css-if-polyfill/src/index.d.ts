@@ -16,7 +16,7 @@ export function processCSSText(
 ): any;
 
 /**
- * Check if browser has native CSS if() support
+ * Check if browser has native CSS Custom Function support
  */
 export function hasNativeSupport(): boolean;
 

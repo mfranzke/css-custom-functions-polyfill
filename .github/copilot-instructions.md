@@ -1,13 +1,13 @@
-# GitHub Copilot Instructions for CSS if() Polyfill
+# GitHub Copilot Instructions for CSS Custom Functions polyfill
 
 ## Project Overview
 
-This is a JavaScript polyfill and PostCSS plugin for [CSS if() functionality](https://developer.mozilla.org/en-US/docs/Web/CSS/if). The polyfill provides browser support for the CSS if() function with style(), media(), and supports() conditions as specified in the WCAG (Web Content Accessibility Guidelines).
+This is a JavaScript polyfill and PostCSS plugin for [CSS Custom Function functionality](https://developer.mozilla.org/en-US/docs/Web/CSS/if). The polyfill provides browser support for the CSS Custom Function function with style(), media(), and supports() conditions as specified in the WCAG (Web Content Accessibility Guidelines).
 
 <!-- TODO: Update this section if the official specification changes.
 https://drafts.csswg.org/css-values-5/#if-notation -->
 
-## Official WCAG CSS if() Function Specification
+## Official WCAG CSS Custom Function Function Specification
 
 8.3. Conditional Value Selection: the if() notation
 The if() function is an arbitrary substitution function that represents conditional values. Its argument consists of an ordered semi-colon–separated list of statements, each consisting of a condition followed by a colon followed by a value. An if() function represents the value corresponding to the first condition in its argument list to be true; if no condition matches, then the if() function represents an empty token stream.
@@ -49,13 +49,13 @@ Note: Unlike using @media/@supports/@container rules, which just ignore their co
 
 ### Core Packages
 
-- `packages/css-if-polyfill/` - Main JavaScript polyfill
+- `packages/css-custom-functions-polyfill/` - Main JavaScript polyfill
 - `packages/postcss-if-function/` - PostCSS plugin for build-time transformation
 
 ### Key Files
 
-- `packages/css-if-polyfill/src/index.js` - Main polyfill runtime
-- `packages/css-if-polyfill/src/transform.js` - CSS transformation logic
+- `packages/css-custom-functions-polyfill/src/index.js` - Main polyfill runtime
+- `packages/css-custom-functions-polyfill/src/transform.js` - CSS transformation logic
 - `test/fixtures/` - CSS test fixture pairs (_.input.css / _.expected.css)
 - `test/fixtures-validation/` - Playwright-based browser validation tests
 
@@ -67,9 +67,9 @@ Note: Unlike using @media/@supports/@container rules, which just ignore their co
 
 ## Syntax Rules and Implementation Guidelines
 
-### CSS if() Function Syntax
+### CSS Custom Function Function Syntax
 
-When working with CSS if() functions, always follow the official WCAG specification syntax as included in the previous section "Official WCAG CSS if() Function Specification".
+When working with CSS Custom Function functions, always follow the official WCAG specification syntax as included in the previous section "Official WCAG CSS Custom Function Function Specification".
 
 ### Code Style Requirements
 
@@ -107,7 +107,7 @@ When working with CSS if() functions, always follow the official WCAG specificat
 - Must evaluate conditions at runtime based on current browser state
 - Should handle dynamic viewport changes for media queries
 - Must respect CSS cascade and specificity rules
-- Should not interfere with native CSS if() support when available
+- Should not interfere with native CSS Custom Function support when available
 
 ### Error Handling
 
@@ -136,4 +136,4 @@ When working with CSS if() functions, always follow the official WCAG specificat
 5. **Always** bear in mind that the developer's main job is to read, not write, code. Therefore, avoid unnecessary complexity, abbreviations and short forms of parameters, for example in CLI usage.
 6. **Consider** performance impact on large stylesheets and DOM trees
 
-This project aims to provide a complete, specification-compliant implementation of CSS if() functionality for browsers that don't yet support it natively.
+This project aims to provide a complete, specification-compliant implementation of CSS Custom Function functionality for browsers that don't yet support it natively.

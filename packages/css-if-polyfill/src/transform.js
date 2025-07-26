@@ -1,5 +1,5 @@
 /**
- * CSS if() Transformation Engine
+ * CSS Custom Function Transformation Engine
  * Integrated solution combining runtime polyfill with build-time transformation
  */
 

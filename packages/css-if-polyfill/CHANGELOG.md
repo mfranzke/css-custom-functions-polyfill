@@ -1,4 +1,4 @@
-# css-if-polyfill
+# css-custom-functions-polyfill
 
 ## 0.1.3
 

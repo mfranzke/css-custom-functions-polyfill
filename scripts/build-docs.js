@@ -139,7 +139,7 @@ function generateFixtureList() {
 }
 
 // Main execution
-console.log('🔧 CSS if() Polyfill Documentation Builder\n');
+console.log('🔧 CSS Custom Functions polyfill Documentation Builder\n');
 
 try {
 	generateFixtureList();

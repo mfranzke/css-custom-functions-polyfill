@@ -3,7 +3,7 @@
 import { vi } from 'vitest';
 import { hasNativeSupport, init, processCSSText } from '../src/index.js';
 
-describe('CSS if() Polyfill', () => {
+describe('CSS Custom Functions polyfill', () => {
 	beforeEach(() => {
 		// Reset CSS.supports mock
 		globalThis.CSS.supports.mockClear();

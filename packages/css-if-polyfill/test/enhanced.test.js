@@ -2,7 +2,7 @@
 
 import { processCSSText } from '../src/index.js';
 
-describe('Enhanced CSS if() Polyfill - Shorthand Properties', () => {
+describe('Enhanced CSS Custom Functions polyfill - Shorthand Properties', () => {
 	beforeEach(() => {
 		// Reset CSS.supports mock
 		globalThis.CSS.supports.mockClear();

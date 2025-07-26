@@ -1,6 +1,6 @@
 # Migration to pnpm Summary
 
-This document summarizes the changes made to migrate the css-if-polyfill monorepo from npm to pnpm.
+This document summarizes the changes made to migrate the css-custom-functions-polyfill monorepo from npm to pnpm.
 
 ## Files Changed
 
@@ -12,7 +12,7 @@ This document summarizes the changes made to migrate the css-if-polyfill monorep
 ### Package.json Changes
 
 - **Root package.json**: Updated packageManager field and scripts to use pnpm
-- **css-if-polyfill/package.json**: Updated scripts to use pnpm
+- **css-custom-functions-polyfill/package.json**: Updated scripts to use pnpm
 - **postcss-if-function/package.json**: Updated scripts to use pnpm
 
 ### GitHub Workflows Updated

@@ -13,7 +13,7 @@ jobs:
   update-docs:
     name: Update Documentation
     runs-on: ubuntu-24.04
-    if: github.repository == 'mfranzke/css-if-polyfill'
+    if: github.repository == 'mfranzke/css-custom-functions-polyfill'
 
     permissions:
       contents: write
@@ -47,24 +47,24 @@ jobs:
           mkdir -p docs/api
 
           cat > docs/api/README.md << 'EOF'
-          # CSS if() Polyfill API Documentation
+          # CSS Custom Functions polyfill API Documentation
 
           ## Installation
 
           ```bash
-          npm install css-if-polyfill
+          npm install css-custom-functions-polyfill
           ```
 
           ## CDN Usage
 
           ```html
-          <script type="module" src="https://cdn.jsdelivr.net/npm/css-if-polyfill/dist/index.modern.js"></script>
+          <script type="module" src="https://cdn.jsdelivr.net/npm/css-custom-functions-polyfill/dist/index.modern.js"></script>
           ```
 
           ## ESM Import
 
           ```javascript
-          import { init } from 'css-if-polyfill';
+          import { init } from 'css-custom-functions-polyfill';
 
           // Initialize the polyfill
           init();
@@ -73,7 +73,7 @@ jobs:
           ## CommonJS Require
 
           ```javascript
-          const { init } = require('css-if-polyfill');
+          const { init } = require('css-custom-functions-polyfill');
 
           // Initialize the polyfill
           init();
@@ -83,7 +83,7 @@ jobs:
 
           ### `init(options?)`
 
-          Initializes the CSS if() polyfill.
+          Initializes the CSS Custom Functions polyfill.
 
           **Parameters:**
           - `options` (optional): Configuration object
@@ -103,7 +103,7 @@ jobs:
 
           ### `hasNativeSupport()`
 
-          Check if the browser has native CSS if() support.
+          Check if the browser has native CSS Custom Function support.
 
           **Returns:** boolean
 

@@ -1,15 +1,15 @@
 {
-  "name": "css-if-polyfill-monorepo",
+  "name": "css-custom-functions-polyfill-monorepo",
   "version": "",
   "type": "module",
-  "description": "A JavaScript polyfill and PostCSS plugin for CSS if() functionality with style(), media(), and supports() functions",
+  "description": "A JavaScript polyfill and PostCSS plugin for CSS Custom Function functionality with style(), media(), and supports() functions",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mfranzke/css-if-polyfill.git"
+    "url": "git+https://github.com/mfranzke/css-custom-functions-polyfill.git"
   },
-  "homepage": "https://mfranzke.github.io/css-if-polyfill/",
+  "homepage": "https://mfranzke.github.io/css-custom-functions-polyfill/",
   "bugs": {
-    "url": "https://github.com/mfranzke/css-if-polyfill/issues"
+    "url": "https://github.com/mfranzke/css-custom-functions-polyfill/issues"
   },
   "author": "Maximilian Franzke",
   "license": "MIT",
@@ -32,11 +32,11 @@
     "dev": "pnpm --recursive run dev",
     "lint": "pnpm run '/^lint:[^:]*$/'",
     "lint:markdownlint": "markdownlint --config .config/.markdown-lint.yml **/*.md",
-    "lint:packages": "publint packages/css-if-polyfill && publint packages/postcss-if-function",
+    "lint:packages": "publint packages/css-custom-functions-polyfill && publint packages/postcss-if-function",
     "lint:xo": "xo",
     "prelint:packages": "pnpm run build",
     "prepare": "husky",
-    "preserve": "pnpm --filter=css-if-polyfill run build",
+    "preserve": "pnpm --filter=css-custom-functions-polyfill run build",
     "serve": "http-server -p 3000 -o examples/basic-examples.html",
     "test": "pnpm --recursive run test"
   },

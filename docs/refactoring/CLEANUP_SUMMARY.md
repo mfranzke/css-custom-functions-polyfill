@@ -40,7 +40,7 @@
 ## 📁 Final Clean Project Structure
 
 ```text
-css-if-polyfill/
+css-custom-functions-polyfill/
 ├── bin/
 │   ├── cli.js             # Build-time transformation CLI
 ├── src/
@@ -109,7 +109,7 @@ css-if-polyfill/
 
 ---
 
-The CSS if() polyfill is now in a clean, production-ready state with:
+The CSS Custom Functions polyfill is now in a clean, production-ready state with:
 
 - ✅ **Consolidated architecture**
 - ✅ **Comprehensive testing**

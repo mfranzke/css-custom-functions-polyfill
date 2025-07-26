@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 /**
- * CSS if() Build-time Transformation CLI
- * Transforms CSS if() functions to native @media/@supports rules
+ * CSS Custom Function Build-time Transformation CLI
+ * Transforms CSS Custom Function functions to native @media/@supports rules
  */
 
 import { readFile, writeFile } from 'node:fs/promises';
@@ -11,10 +11,10 @@ import process from 'node:process';
 import { buildTimeTransform } from '../dist/index.modern.js';
 
 const help = `
-CSS if() Build-time Transformation CLI
+CSS Custom Function Build-time Transformation CLI
 
 Usage:
-  npx css-if-polyfill <input.css> [output.css] [options]
+  npx css-custom-functions-polyfill <input.css> [output.css] [options]
   node bin/cli.js <input.css> [output.css] [options]
 
 Options:
@@ -23,9 +23,9 @@ Options:
   --help           Show this help message
 
 Examples:
-  npx css-if-polyfill input.css output.css
-  npx css-if-polyfill input.css output.css --minify --stats
-  npx css-if-polyfill input.css --stats  (outputs to stdout)
+  npx css-custom-functions-polyfill input.css output.css
+  npx css-custom-functions-polyfill input.css output.css --minify --stats
+  npx css-custom-functions-polyfill input.css --stats  (outputs to stdout)
 `;
 
 const parseArguments = () => {
@@ -118,7 +118,7 @@ const main = async () => {
 				'\n⚠️  Warning: Some if() functions still require runtime processing.'
 			);
 			console.log(
-				'   Make sure to include the CSS if() polyfill in your webpage.'
+				'   Make sure to include the CSS Custom Functions polyfill in your webpage.'
 			);
 		}
 	} catch (error) {

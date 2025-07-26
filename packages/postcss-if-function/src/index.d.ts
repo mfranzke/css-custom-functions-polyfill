@@ -23,7 +23,7 @@ export type PluginOptions = {
  * @property {string[]} [skipSelectors=[]] - Array of selectors to skip transformation for
  */
 /**
- * Creates the PostCSS CSS if() plugin
+ * Creates the PostCSS CSS Custom Function plugin
  * @param {PluginOptions} [options={}] - Plugin configuration options
  * @returns {Object} PostCSS plugin
  */

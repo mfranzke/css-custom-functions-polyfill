@@ -2,7 +2,7 @@
 
 ## Summary
 
-This enhancement adds automatic media query change tracking to the CSS if() polyfill. Previously, `media()` conditions were only evaluated once during initial processing. Now, the polyfill automatically listens for media query changes and re-evaluates styles when viewport conditions change.
+This enhancement adds automatic media query change tracking to the CSS Custom Functions polyfill. Previously, `media()` conditions were only evaluated once during initial processing. Now, the polyfill automatically listens for media query changes and re-evaluates styles when viewport conditions change.
 
 ## Key Changes
 

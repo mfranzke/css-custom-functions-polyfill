@@ -1,6 +1,6 @@
 # GitHub Actions Workflows Documentation
 
-This document describes all the GitHub Actions workflows and configurations set up for the CSS if() Polyfill project.
+This document describes all the GitHub Actions workflows and configurations set up for the CSS Custom Functions polyfill project.
 
 ## Workflows Overview
 
@@ -75,7 +75,7 @@ _Note: Linting has been moved to default.yml to avoid duplication_
     - Updates example imports to use built polyfill
 - Deploys to GitHub Pages with proper permissions
 
-**CDN Access:** `https://cdn.jsdelivr.net/npm/css-if-polyfill/dist/index.modern.js`
+**CDN Access:** `https://cdn.jsdelivr.net/npm/css-custom-functions-polyfill/dist/index.modern.js`
 
 ### 4. **Release Workflow** (`.github/workflows/release.yml`)
 
@@ -323,8 +323,8 @@ After workflows complete:
 
 After successful deployment:
 
-- Main site: `https://mfranzke.github.io/css-if-polyfill/`
-- CDN access: `https://cdn.jsdelivr.net/npm/css-if-polyfill/dist/index.modern.js`
+- Main site: `https://mfranzke.github.io/css-custom-functions-polyfill/`
+- CDN access: `https://cdn.jsdelivr.net/npm/css-custom-functions-polyfill/dist/index.modern.js`
 
 ## Maintenance
 

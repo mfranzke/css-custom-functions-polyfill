@@ -1,12 +1,12 @@
 # postcss-if-function
 
-[![Default CI/CD Pipeline](https://github.com/mfranzke/css-if-polyfill/actions/workflows/default.yml/badge.svg)](https://github.com/mfranzke/css-if-polyfill/actions/workflows/default.yml)
+[![Default CI/CD Pipeline](https://github.com/mfranzke/css-custom-functions-polyfill/actions/workflows/default.yml/badge.svg)](https://github.com/mfranzke/css-custom-functions-polyfill/actions/workflows/default.yml)
 [![npm version](https://badge.fury.io/js/postcss-if-function.svg)](https://badge.fury.io/js/postcss-if-function)
-[![Build Status](https://github.com/mfranzke/css-if-polyfill/workflows/CI/badge.svg)](https://github.com/mfranzke/css-if-polyfill/actions)
+[![Build Status](https://github.com/mfranzke/css-custom-functions-polyfill/workflows/CI/badge.svg)](https://github.com/mfranzke/css-custom-functions-polyfill/actions)
 
 A [PostCSS](https://postcss.org/) plugin for transforming CSS `if()` functions into native CSS `@media` and `@supports` rules at build time.
 
-This plugin is part of the [css-if-polyfill](https://github.com/mfranzke/css-if-polyfill/tree/main/packages/css-if-polyfill/) project and provides build-time transformation of conditional CSS, eliminating the need for runtime JavaScript processing when using only `media()` and `supports()` functions.
+This plugin is part of the [css-custom-functions-polyfill](https://github.com/mfranzke/css-custom-functions-polyfill/tree/main/packages/css-custom-functions-polyfill/) project and provides build-time transformation of conditional CSS, eliminating the need for runtime JavaScript processing when using only `media()` and `supports()` functions.
 
 ## Installation
 
@@ -284,7 +284,7 @@ module.exports = {
 
 ## Limitations
 
-- **Style Functions Not Supported**: This plugin only transforms `media()` and `supports()` functions. For `style()` functions (which depend on runtime DOM state), use the [css-if-polyfill](https://github.com/mfranzke/css-if-polyfill/tree/main/packages/css-if-polyfill/) runtime (browser) library
+- **Style Functions Not Supported**: This plugin only transforms `media()` and `supports()` functions. For `style()` functions (which depend on runtime DOM state), use the [css-custom-functions-polyfill](https://github.com/mfranzke/css-custom-functions-polyfill/tree/main/packages/css-custom-functions-polyfill/) runtime (browser) library
 - **Static Analysis Only**: The plugin performs static analysis and cannot handle dynamically generated CSS
 - **PostCSS Compatibility**: Requires PostCSS 8.0.0 or higher
 
@@ -293,16 +293,16 @@ module.exports = {
 For complete CSS `if()` support including `style()` functions, combine this plugin with the runtime polyfill:
 
 1. Use this PostCSS plugin for build-time transformation of `media()` and `supports()`
-2. Use [css-if-polyfill](https://github.com/mfranzke/css-if-polyfill/tree/main/packages/css-if-polyfill/) runtime for `style()` functions
+2. Use [css-custom-functions-polyfill](https://github.com/mfranzke/css-custom-functions-polyfill/tree/main/packages/css-custom-functions-polyfill/) runtime for `style()` functions
 
 ```html
 <!-- For style() functions only -->
-<script src="https://cdn.jsdelivr.net/npm/css-if-polyfill/dist/index.modern.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/css-custom-functions-polyfill/dist/index.modern.js"></script>
 ```
 
 ## Performance Considerations
 
-This plugin is designed for optimal build-time performance, transforming CSS if() functions to native CSS without runtime overhead. However, there are some architectural considerations:
+This plugin is designed for optimal build-time performance, transforming CSS Custom Function functions to native CSS without runtime overhead. However, there are some architectural considerations:
 
 ### Current Implementation
 
@@ -311,7 +311,7 @@ This plugin is designed for optimal build-time performance, transforming CSS if(
 
 ### Future Optimization Opportunities
 
-- **Reduced CSS Code**: We'll make use of CSS Nesting capabilities as soon as any of the browsers are EOL ([#35](https://github.com/mfranzke/css-if-polyfill/issues/35)).
+- **Reduced CSS Code**: We'll make use of CSS Nesting capabilities as soon as any of the browsers are EOL ([#35](https://github.com/mfranzke/css-custom-functions-polyfill/issues/35)).
 - **Direct AST Transformation**: The transformation engine could be modified to output PostCSS AST nodes directly, eliminating the double parsing overhead
 - **Streaming Processing**: For very large CSS files, streaming transformation could reduce memory usage
 
@@ -319,7 +319,7 @@ For most typical usage scenarios, the current performance is excellent and the d
 
 ## Contributing
 
-See the main [Contributing Guide](https://github.com/mfranzke/css-if-polyfill/blob/main/CONTRIBUTING.md) for details on how to contribute to this project.
+See the main [Contributing Guide](https://github.com/mfranzke/css-custom-functions-polyfill/blob/main/CONTRIBUTING.md) for details on how to contribute to this project.
 
 ## License
 
@@ -327,6 +327,6 @@ MIT © [Maximilian Franzke](https://github.com/mfranzke)
 
 ## Related
 
-- [css-if-polyfill](https://github.com/mfranzke/css-if-polyfill/tree/main/packages/css-if-polyfill/) - Runtime polyfill for CSS if() functions
+- [css-custom-functions-polyfill](https://github.com/mfranzke/css-custom-functions-polyfill/tree/main/packages/css-custom-functions-polyfill/) - Runtime polyfill for CSS Custom Function functions
 - [PostCSS](https://postcss.org/) - Tool for transforming CSS with JavaScript
 - [CSS Conditional Rules](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_conditional_rules) - MDN documentation for @media and @supports
