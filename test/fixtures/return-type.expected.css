@@ -1,0 +1,9 @@
+/* Function with return type specification */
+/* @function --double-z() returns <number> {
+	result: calc(var(--z) * 2);
+} */
+
+div {
+	--z: 3;
+	z-index: calc(3 * 2);
+}

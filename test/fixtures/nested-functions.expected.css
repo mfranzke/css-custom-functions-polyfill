@@ -1,0 +1,13 @@
+/* Nested function calls */
+/* @function --outer(--outer-arg) {
+	--outer-local: 2;
+	result: --inner();
+}
+
+@function --inner() returns <number> {
+	result: calc(var(--outer-arg) + var(--outer-local));
+} */
+
+div {
+	z-index: calc(1 + 2);
+}

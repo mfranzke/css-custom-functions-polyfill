@@ -1,0 +1,14 @@
+/* Function with CSS-wide keywords */
+/* @function --inherited-color(--fallback <color>: blue) {
+	--color: inherit;
+	result: var(--color, var(--fallback));
+} */
+
+.parent {
+	color: red;
+}
+
+.child {
+	color: inherit;
+	background: green;
+}

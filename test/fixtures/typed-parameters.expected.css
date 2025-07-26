@@ -1,0 +1,13 @@
+/* Function with typed parameters and default values */
+/* @function --shadow(--shadow-color <color>: inherit) {
+	result: 2px 2px var(--shadow-color, black);
+} */
+
+.foo {
+	--shadow-color: blue;
+	box-shadow: 2px 2px blue;
+}
+
+.bar {
+	box-shadow: 2px 2px red;
+}

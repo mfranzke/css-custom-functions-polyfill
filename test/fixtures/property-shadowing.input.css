@@ -1,0 +1,12 @@
+/* Function accessing custom properties from call site */
+@function --add-a-b-c(--b, --c) {
+	--c: 300;
+	result: calc(var(--a) + var(--b) + var(--c));
+}
+
+div {
+	--a: 1;
+	--b: 2;
+	--c: 3;
+	z-index: --add-a-b-c(20, 30);
+}

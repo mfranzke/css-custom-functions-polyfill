@@ -1,0 +1,9 @@
+/* Multiple result declarations (later wins) */
+/* @function --mypi() {
+	result: 3;
+	result: 3.14;
+} */
+
+.circle {
+	border-radius: 3.14;
+}

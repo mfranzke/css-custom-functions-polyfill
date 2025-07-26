@@ -1,0 +1,17 @@
+/* Function with supports conditional */
+/* @function --modern-display() {
+	result: block;
+	@supports (display: grid) {
+		result: grid;
+	}
+} */
+
+.layout {
+	display: block;
+}
+
+@supports (display: grid) {
+	.layout {
+		display: grid;
+	}
+}

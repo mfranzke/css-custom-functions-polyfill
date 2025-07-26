@@ -1,0 +1,20 @@
+/* Function with local variables in conditionals */
+/* @function --responsive-size() {
+	--size: 16px;
+	@media (width > 1000px) {
+		--size: 20px;
+	}
+	result: var(--size);
+} */
+
+.element {
+	font-size: 16px;
+	padding: 16px;
+}
+
+@media (width > 1000px) {
+	.element {
+		font-size: 20px;
+		padding: 20px;
+	}
+}

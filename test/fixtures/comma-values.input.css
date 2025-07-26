@@ -1,0 +1,8 @@
+/* Function with comma-containing value in curly braces */
+@function --max-plus-x(--list, --x) {
+	result: calc(max(var(--list)) + var(--x));
+}
+
+div {
+	width: --max-plus-x({1px, 7px, 2px}, 3px);
+}

@@ -1,3 +1,0 @@
-.grid {
-	display: if(supports(display: grid): grid; else: block);
-}

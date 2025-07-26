@@ -1,0 +1,13 @@
+/* Basic custom function definition and usage */
+/* @function --negative(--value) {
+	result: calc(-1 * var(--value));
+} */
+
+html {
+	--gap: 1em;
+	padding: calc(-1 * 1em);
+}
+
+.example {
+	margin: calc(-1 * 10px);
+}

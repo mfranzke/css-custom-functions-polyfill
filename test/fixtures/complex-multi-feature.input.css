@@ -1,0 +1,28 @@
+/* Complex function with multiple features */
+@function --complex-layout(--direction: row, --gap <length>: 1rem, --wrap: nowrap) {
+	--display: flex;
+	--flex-direction: var(--direction);
+	--flex-wrap: var(--wrap);
+	--gap: var(--gap);
+	
+	@media (width < 768px) {
+		--flex-direction: column;
+		--gap: 0.5rem;
+	}
+	
+	@supports (display: grid) {
+		--display: grid;
+		--gap: var(--gap);
+	}
+	
+	result: {
+		display: var(--display);
+		flex-direction: var(--flex-direction);
+		flex-wrap: var(--flex-wrap);
+		gap: var(--gap);
+	};
+}
+
+.container {
+	--complex-layout(row, 2rem, wrap);
+}

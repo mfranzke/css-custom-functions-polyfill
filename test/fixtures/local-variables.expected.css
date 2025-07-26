@@ -1,0 +1,11 @@
+/* Function with local variables */
+/* @function --circle-area(--r) {
+	--r2: calc(var(--r) * var(--r));
+	result: calc(3.14159 * var(--r2));
+} */
+
+.circle {
+	--radius: 5px;
+	width: calc(3.14159 * calc(5px * 5px));
+	height: calc(3.14159 * calc(10px * 10px));
+}

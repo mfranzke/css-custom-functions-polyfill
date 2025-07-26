@@ -1,0 +1,12 @@
+/* Function with complex type specification */
+/* @function --border-style(--color type(<color> | <percentage>), --width <length>) {
+	result: var(--width) solid var(--color);
+} */
+
+.element {
+	border: 2px solid red;
+}
+
+.element2 {
+	border: 1px solid 50%;
+}

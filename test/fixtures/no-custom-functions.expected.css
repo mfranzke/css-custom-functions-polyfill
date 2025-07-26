@@ -1,0 +1,11 @@
+/* No custom functions - should pass through unchanged */
+.normal {
+	color: red;
+	background: blue;
+	font-size: 16px;
+}
+
+.also-normal {
+	display: flex;
+	justify-content: center;
+}
