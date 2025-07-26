@@ -379,5 +379,5 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ## Related
 
-- [postcss-custom-functions](https://github.com/mfranzke/css-custom-functions-polyfill/tree/main/packages/postcss-custom-functions/) - PostCSS plugin for build-time transformation
+- [postcss-custom-function](https://github.com/mfranzke/css-custom-functions-polyfill/tree/main/packages/postcss-custom-function/) - PostCSS plugin for build-time transformation
 - [CSS Conditional Rules](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_conditional_rules) - MDN documentation for @media and @supports

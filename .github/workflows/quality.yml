@@ -56,7 +56,7 @@ jobs:
           name: code-coverage-report
           path: |
             packages/css-custom-functions-polyfill/coverage/
-            packages/postcss-custom-functions/coverage/
+            packages/postcss-custom-function/coverage/
           retention-days: 30
 
   security:

@@ -230,7 +230,7 @@ module.exports = {
 									function cssIfTransform() {
 										return {
 											postcssPlugin:
-												"postcss-custom-functions",
+												"postcss-custom-function",
 											Once(root) {
 												const result =
 													buildTimeTransform(

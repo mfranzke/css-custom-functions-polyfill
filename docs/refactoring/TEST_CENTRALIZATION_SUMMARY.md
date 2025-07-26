@@ -15,7 +15,7 @@ packages/css-custom-functions-polyfill/test/
 ├── multiple-conditions.test.js // CSS strings inline
 └── transform-engine.test.js  // CSS strings inline
 
-packages/postcss-custom-functions/test/
+packages/postcss-custom-function/test/
 └── plugin.test.js           // CSS strings inline
 ```
 
