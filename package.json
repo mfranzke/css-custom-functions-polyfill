@@ -1,0 +1,70 @@
+{
+  "name": "css-if-polyfill-monorepo",
+  "version": "",
+  "type": "module",
+  "description": "A JavaScript polyfill and PostCSS plugin for CSS if() functionality with style(), media(), and supports() functions",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mfranzke/css-if-polyfill.git"
+  },
+  "homepage": "https://mfranzke.github.io/css-if-polyfill/",
+  "bugs": {
+    "url": "https://github.com/mfranzke/css-if-polyfill/issues"
+  },
+  "author": "Maximilian Franzke",
+  "license": "MIT",
+  "private": true,
+  "packageManager": "pnpm@9.0.0",
+  "keywords": [
+    "css",
+    "polyfill",
+    "conditional",
+    "if",
+    "media-query",
+    "supports",
+    "style"
+  ],
+  "scripts": {
+    "build": "pnpm --recursive run build",
+    "build:docs": "node scripts/build-docs.js",
+    "changeset:release": "pnpm run build && pnpm exec changeset publish",
+    "codestyle": "prettier . --write",
+    "dev": "pnpm --recursive run dev",
+    "lint": "pnpm run '/^lint:[^:]*$/'",
+    "lint:markdownlint": "markdownlint --config .config/.markdown-lint.yml **/*.md",
+    "lint:packages": "publint packages/css-if-polyfill && publint packages/postcss-if-function",
+    "lint:xo": "xo",
+    "prelint:packages": "pnpm run build",
+    "prepare": "husky",
+    "preserve": "pnpm --filter=css-if-polyfill run build",
+    "serve": "http-server -p 3000 -o examples/basic-examples.html",
+    "test": "pnpm --recursive run test"
+  },
+  "devDependencies": {
+    "@babel/core": "7.28.0",
+    "@babel/preset-env": "7.28.0",
+    "@changesets/cli": "2.29.5",
+    "@commitlint/cli": "19.8.1",
+    "@commitlint/config-conventional": "19.8.1",
+    "@vitest/coverage-v8": "3.2.4",
+    "http-server": "14.1.1",
+    "husky": "9.1.7",
+    "jsdom": "26.1.0",
+    "lint-staged": "16.1.2",
+    "markdownlint-cli": "0.45.0",
+    "microbundle": "0.15.1",
+    "playwright": "1.54.1",
+    "prettier": "3.6.2",
+    "prettier-plugin-organize-imports": "4.1.0",
+    "prettier-plugin-pkg": "0.21.2",
+    "publint": "0.3.12",
+    "vite": "7.0.5",
+    "vitest": "3.2.4",
+    "xo": "1.1.1"
+  },
+  "pnpm": {
+    "overrides": {
+      "@eslint/plugin-kit": "0.3.3"
+    }
+  }
+}

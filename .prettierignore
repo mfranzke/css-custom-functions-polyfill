@@ -1,0 +1,5 @@
+pnpm-lock.yaml
+node_modules
+dist
+# Ignore all files with new CSS syntax
+test/fixtures/*.input.css

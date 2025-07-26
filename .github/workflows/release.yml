@@ -1,0 +1,74 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".changeset/**"
+      - "src/**"
+      - "package.json"
+  workflow_dispatch:
+    inputs:
+      action:
+        description: "Choose an action"
+        required: true
+        default: "version"
+        type: choice
+        options:
+          - version
+          - release
+  workflow_call: # Allow this workflow to be called by other workflows
+
+concurrency:
+  group: release-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  # Only run release process after main CI/CD pipeline passes
+  version-or-release:
+    name: Create Version PR or Release
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write # to create release (changesets/action)
+      issues: write # to post issue comments (changesets/action)
+      pull-requests: write # to create pull request (changesets/action)
+      id-token: write # to use OpenID Connect token for provenance (changesets/action)
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check changeset status
+        run: |
+          echo "Checking changeset status..."
+          pnpm exec changeset status
+          echo "Listing changesets..."
+          ls -la .changeset/
+
+      - name: Create Release Pull Request or Publish to npm
+        # https://github.com/changesets/action
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          # this expects you to have a script called changeset:release which does a build for your packages and calls changeset publish
+          publish: pnpm run changeset:release
+          commit: "chore: version packages" # we need to fulfill commitlint based rules
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_PROVENANCE: true

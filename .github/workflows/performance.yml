@@ -1,0 +1,82 @@
+name: Performance Tests
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "src/**"
+  pull_request:
+    branches: [main]
+    paths:
+      - "src/**"
+  workflow_dispatch:
+  workflow_call: # Allow this workflow to be called by other workflows
+
+jobs:
+  performance:
+    name: Performance Benchmarks
+    runs-on: ubuntu-24.04
+
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build package
+        run: pnpm run build
+
+      - name: Install Playwright
+        run: pnpm exec playwright install chromium
+
+      - name: Run performance benchmark
+        run: node test/performance/run-benchmark.cjs
+
+      - name: Upload performance results
+        uses: actions/upload-artifact@v4
+        with:
+          name: performance-results
+          path: test/performance/performance-results.json
+          retention-days: 30
+
+      - name: Comment performance results on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('node:fs');
+            const results = JSON.parse(fs.readFileSync('test/performance/performance-results.json', 'utf8'));
+
+            const comment = `## 🚀 Performance Benchmark Results
+
+            | Metric | Value | Status |
+            |--------|-------|--------|
+            | Initialization Time | ${results.initTime.toFixed(2)}ms | ${results.initTime <= 100 ? '✅' : '❌'} |
+            | Avg Processing Time | ${results.avgProcessTime.toFixed(4)}ms | ${results.avgProcessTime <= 1 ? '✅' : '❌'} |
+            | Total Processing Time (1000x) | ${results.processTime.toFixed(2)}ms | ℹ️ |
+
+            ${results.initTime <= 100 && results.avgProcessTime <= 1 ? '✅ All benchmarks passed!' : '❌ Some benchmarks failed - please review performance impact.'}
+            `;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
