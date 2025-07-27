@@ -100,42 +100,48 @@ export function normalizeCSS(css) {
  */
 export const basicFixtureTests = [
 	{
-		fixture: 'basic-media',
-		description: 'transform media queries to native CSS'
+		fixture: 'basic-function',
+		description: 'transform basic CSS Custom Functions'
 	},
 	{
-		fixture: 'basic-supports',
-		description: 'transform supports queries to native CSS'
+		fixture: 'comma-values',
+		description: 'handle comma-separated values in function arguments'
 	},
 	{
-		fixture: 'complex-media-query',
-		description: 'handle complex media queries'
+		fixture: 'conditional-media',
+		description: 'transform media queries in CSS Custom Functions'
 	},
 	{
-		fixture: 'multiple-functions-one-rule',
-		description: 'handle multiple functions in one rule'
+		fixture: 'conditional-variables',
+		description: 'handle conditional variables in functions'
 	},
 	{
-		fixture: 'with-comments',
-		description: 'handle CSS with comments'
+		fixture: 'css-wide-keywords',
+		description: 'handle CSS-wide keywords in functions'
 	},
 	{
-		fixture: 'no-if-functions',
-		description: 'preserve CSS without if() functions'
+		fixture: 'nested-functions',
+		description: 'handle nested function calls'
+	},
+	{
+		fixture: 'no-custom-functions',
+		description: 'preserve CSS without CSS Custom Functions'
+	},
+	{
+		fixture: 'property-shadowing',
+		description: 'handle property shadowing in functions'
+	},
+	{
+		fixture: 'return-type',
+		description: 'handle function return types'
+	},
+	{
+		fixture: 'supports-conditional',
+		description: 'transform CSS supports queries in functions'
 	}
 ];
 
 /**
  * PostCSS-specific test configurations (includes additional fixtures used only by PostCSS)
  */
-export const postcssFixtureTests = [
-	...basicFixtureTests,
-	{
-		fixture: 'multiple-separate-functions',
-		description: 'handle multiple separate if() functions'
-	},
-	{
-		fixture: 'multiple-concatenated-conditions',
-		description: 'handle multiple if() conditions'
-	}
-];
+export const postcssFixtureTests = [...basicFixtureTests];
