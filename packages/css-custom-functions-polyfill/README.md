@@ -1,4 +1,4 @@
-# CSS Custom Function Function Polyfill v0.1
+# CSS Custom Function Function Polyfill v0.0
 
 [![MIT license](https://img.shields.io/npm/l/css-custom-functions-polyfill.svg "license badge")](https://opensource.org/licenses/mit-license.php)
 
@@ -16,15 +16,6 @@
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.0-4baaaa.svg)](CODE-OF-CONDUCT.md)
 
 A modern JavaScript polyfill for the [CSS `if()` function](https://developer.mozilla.org/en-US/docs/Web/CSS/if) with **hybrid build-time and runtime processing**. Transforms CSS `if()` functions to native `@media` and `@supports` rules where possible, with runtime fallback for dynamic conditions.
-
-## 🚀 What's New in v0.1
-
-- **🏗️ Build-time Transformation** - Convert `media()` and `supports()` conditions to native CSS
-- **⚡ Zero Runtime Cost** - Native CSS rules require no JavaScript processing
-- **🔄 Hybrid Processing** - Automatic routing between native and runtime processing
-- **🛠️ CLI Tool** - Transform CSS files during build process
-- **📈 Performance Optimized** - Up to 95% faster for transformable conditions
-- **🔧 Backwards Compatible** - Existing code continues to work unchanged
 
 ## Features
 
@@ -362,10 +353,15 @@ The polyfill works in all modern browsers that support:
 
 The package includes comprehensive examples:
 
-- `examples/index.html` - Basic CSS Custom Function usage
+- `examples/basic-examples.html` - Basic CSS Custom Function usage
+- `examples/simple-examples.html` - Straightforward CSS Custom Function examples
 - `examples/advanced.html` - Advanced conditional styling
-- `examples/enhanced.html` - Multiple if-tests and shorthand properties
-- `examples/multiple-conditions.html` - Multiple conditions within single if()
+- `examples/enhanced.html` - Enhanced CSS Custom Functions with complex features
+- `examples/enhanced-simple.html` - Streamlined enhanced examples
+- `examples/multiple-conditions.html` - Multiple conditions within single function
+- `examples/multiple-conditions-simple.html` - Streamlined multiple conditions examples
+- `examples/media-query-tracking.html` - Media query tracking and dynamic updates
+- `examples/native-css-approach.html` - Native CSS approach examples
 
 ## Contributing
 
