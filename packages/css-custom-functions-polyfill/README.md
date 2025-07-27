@@ -108,10 +108,14 @@ console.log(processed); // .button { color: red; } @media(width >= 768px) { .but
 The polyfill supports the following CSS Custom Function syntax:
 
 ```css
-property: if(condition: value; else: value-if-false);
-```
+@function --negative(--value) {
+	result: calc(-1 * var(--value));
+}
 
-**Note:** The `else` clause is optional. If omitted and the condition is false, an empty value will be used.
+.example {
+	margin: --negative(10px);
+}
+```
 
 ## Enhanced Features
 
