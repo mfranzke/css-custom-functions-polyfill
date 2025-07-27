@@ -5,7 +5,7 @@
 This is a JavaScript polyfill and PostCSS plugin for [CSS Custom Function functionality](https://developer.mozilla.org/en-US/docs/Web/CSS/if). The polyfill provides browser support for the CSS Custom Function function with style(), media(), and supports() conditions as specified in the WCAG (Web Content Accessibility Guidelines).
 
 <!-- TODO: Update this section if the official specification changes.
-https://drafts.csswg.org/css-values-5/#if-notation -->
+https://www.w3.org/TR/css-mixins-1/ -->
 
 ## Official WCAG CSS Custom Function Function Specification
 
