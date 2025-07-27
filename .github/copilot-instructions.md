@@ -469,7 +469,7 @@ When working with CSS Custom Function functions, always follow the official WCAG
 - Follow XO linting rules (extends ESLint strict configuration)
 - Use `/* eslint-disable rule-name */` blocks only when necessary for browser automation
 - Prefer functional programming patterns
-- Use meaningful variable names and comprehensive JSDoc comments
+- Use meaningful variable names and comprehensive JSDoc comments, instead of TypeScript within our source code, but still provide type definitions for public APIs
 
 ### Testing Requirements
 
@@ -529,7 +529,3 @@ When working with CSS Custom Function functions, always follow the official WCAG
 6. **Consider** performance impact on large stylesheets and DOM trees
 
 This project aims to provide a complete, specification-compliant implementation of CSS Custom Function functionality for browsers that don't yet support it natively.
-
-```
-
-```
