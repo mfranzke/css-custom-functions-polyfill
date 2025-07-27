@@ -1,27 +1,28 @@
 /**
- * CSS Custom Function Function Polyfill
- * Provides support for CSS Custom Function function with style(), media(), and supports() conditions
- * Syntax: if(condition: value; else: fallback-value)
- * Supports multiple conditions within a single if() and usage within CSS shorthand properties
+ * CSS Custom Functions Polyfill
+ * Provides support for CSS Custom Functions with @function definitions and conditional logic
+ * Syntax: @function --name(params) { result: value; @media/supports... }
+ * Function calls: --name(args)
  */
 
-/* global document, CSS, Node, MutationObserver */
+/* global document, Node, MutationObserver */
 
-import { runtimeTransform } from './transform.js';
+import { extractFunctions, runtimeTransform } from './transform.js';
 
 // Global state
 let polyfillOptions = {
 	debug: false,
 	autoInit: true,
-	useNativeTransform: true // New option to enable native CSS transformation
+	useNativeTransform: true
 };
 
 // Registry for tracking media queries and their associated elements
-const mediaQueryRegistry = new Map(); // MediaQuery -> Set of { element, originalContent }
-const mediaQueryListeners = new Map(); // MediaQuery -> MediaQueryList
+const mediaQueryRegistry = new Map();
+const mediaQueryListeners = new Map();
 
 /**
  * Log debug messages
+ * @param {...any} arguments_ - Arguments to log
  */
 const log = (...arguments_) => {
 	if (polyfillOptions.debug) {
@@ -30,7 +31,8 @@ const log = (...arguments_) => {
 };
 
 /**
- * Check if browser has native CSS Custom Function support
+ * Check if browser has native CSS Custom Functions support
+ * @returns {boolean} - Whether native support is available
  */
 const hasNativeSupport = () => {
 	if (globalThis.window === undefined || !globalThis.CSS) {
@@ -38,10 +40,10 @@ const hasNativeSupport = () => {
 	}
 
 	try {
-		// Test if CSS Custom Function function is supported by testing a specific CSS Custom Function syntax
+		// Test if CSS Custom Functions are supported by testing @function syntax
 		return globalThis.CSS.supports(
-			'color',
-			'if(style(--true): red; else: blue)'
+			'@function --test() { result: red; }',
+			''
 		);
 	} catch {
 		return false;
@@ -49,670 +51,387 @@ const hasNativeSupport = () => {
 };
 
 /**
- * Evaluate a condition (style(), media(), supports())
+ * Evaluate a condition based on type (@media or @supports)
+ * @param {string} condition - The condition string
+ * @param {Object} context - Current context (media queries, support info)
+ * @returns {boolean} - Whether the condition is true
  */
-const evaluateCondition = (
-	condition,
-	registerForTracking = false,
-	element = null,
-	originalContent = null
-) => {
-	condition = condition.trim();
+const evaluateCondition = (condition, context = {}) => {
+	if (!condition) return false;
 
-	// Handle style() function
-	if (condition.startsWith('style(')) {
-		return evaluateStyleCondition(condition);
+	const trimmedCondition = condition.trim();
+	log('Evaluating condition:', trimmedCondition);
+
+	// Handle @media conditions
+	if (trimmedCondition.startsWith('(') && trimmedCondition.endsWith(')')) {
+		return evaluateMediaCondition(trimmedCondition, context);
 	}
 
-	// Handle media() function
-	if (condition.startsWith('media(')) {
-		return evaluateMediaCondition(
-			condition,
-			registerForTracking,
-			element,
-			originalContent
-		);
-	}
-
-	// Handle supports() function
-	if (condition.startsWith('supports(')) {
-		return evaluateSupportsCondition(condition);
-	}
-
-	// Direct boolean evaluation
-	return evaluateBooleanCondition(condition);
-};
-
-/**
- * Evaluate style() condition
- */
-const evaluateStyleCondition = (condition) => {
-	const match = condition.match(/style\s*\(\s*([^)]+)\s*\)/);
-	if (!match) {
-		return false;
-	}
-
-	const query = match[1].trim();
-
-	// Parse property and optional value
-	const parts = query.split(':').map((part) => part.trim());
-	const property = parts[0];
-	const expectedValue = parts[1];
-
-	// Get computed style from document element or a test element
-	const testElement = document.createElement('div');
-	document.body.append(testElement);
-
-	try {
-		const computedStyle = globalThis.getComputedStyle(testElement);
-		const actualValue = computedStyle.getPropertyValue(property);
-
-		if (expectedValue) {
-			return actualValue === expectedValue;
-		}
-
-		// If no expected value, check if property has any value
-		return actualValue !== '' && actualValue !== 'initial';
-	} catch {
-		return false;
-	} finally {
-		testElement.remove();
-	}
-};
-
-/**
- * Evaluate media() condition
- */
-const evaluateMediaCondition = (
-	condition,
-	registerForTracking = false,
-	element = null,
-	originalContent = null
-) => {
-	const match = condition.match(/media\s*\(\s*([^)]+)\s*\)/);
-	if (!match) {
-		return false;
-	}
-
-	const mediaQuery = match[1].trim();
-
-	try {
-		const mediaQueryList = globalThis.matchMedia(`(${mediaQuery})`);
-		const result = mediaQueryList.matches;
-
-		// Register this media query for change tracking if requested
-		if (registerForTracking && element && originalContent) {
-			registerMediaQuery(
-				mediaQuery,
-				element,
-				originalContent,
-				mediaQueryList
-			);
-		}
-
-		return result;
-	} catch {
-		return false;
-	}
-};
-
-/**
- * Evaluate supports() condition
- */
-const evaluateSupportsCondition = (condition) => {
-	const match = condition.match(/supports\s*\(\s*([^)]+)\s*\)/);
-	if (!match) {
-		return false;
-	}
-
-	const feature = match[1].trim();
-
-	try {
-		return CSS.supports(feature);
-	} catch {
-		return false;
-	}
-};
-
-/**
- * Evaluate boolean condition
- */
-const evaluateBooleanCondition = (condition) => {
-	// Simple boolean evaluation
-	const lowerCondition = condition.toLowerCase();
-
-	if (lowerCondition === 'true' || lowerCondition === '1') {
-		return true;
-	}
-
-	if (lowerCondition === 'false' || lowerCondition === '0') {
-		return false;
+	// Handle @supports conditions
+	if (
+		trimmedCondition.includes(':') ||
+		trimmedCondition.includes('selector(')
+	) {
+		return evaluateSupportsCondition(trimmedCondition, context);
 	}
 
 	return false;
 };
 
 /**
- * Parse multiple conditions within a single if() function
+ * Substitute parameter placeholders in a value string
+ * @param {string} value - Value containing parameter placeholders
+ * @param {Object} bindings - Parameter name to value mappings
+ * @returns {string} - Value with parameters substituted
  */
-const parseMultipleConditions = (ifContent) => {
-	const conditions = [];
-	let currentCondition = '';
-	let depth = 0;
-	let inQuotes = false;
-	let quoteChar = '';
-
-	for (let i = 0; i < ifContent.length; i++) {
-		const char = ifContent[i];
-		const previousChar = i > 0 ? ifContent[i - 1] : '';
-
-		// Handle quotes
-		if ((char === '"' || char === "'") && previousChar !== '\\') {
-			if (!inQuotes) {
-				inQuotes = true;
-				quoteChar = char;
-			} else if (char === quoteChar) {
-				inQuotes = false;
-				quoteChar = '';
-			}
-		}
-
-		// Handle parentheses depth
-		if (!inQuotes) {
-			if (char === '(') {
-				depth++;
-			} else if (char === ')') {
-				depth--;
-			}
-		}
-
-		// Check for semicolon separator at depth 0
-		if (!inQuotes && depth === 0 && char === ';') {
-			// This is a separator between conditions
-			if (currentCondition.trim()) {
-				conditions.push(currentCondition.trim());
-			}
-
-			currentCondition = '';
-			continue;
-		}
-
-		currentCondition += char;
+const substituteParameters = (value, bindings) => {
+	// Handle parameter substitution with $paramName syntax
+	let result = value;
+	const pattern = /\$([a-zA-Z][\w-]*)/g;
+	for (const match of value.matchAll(pattern)) {
+		const parameterName = match[1];
+		const replacement = bindings[parameterName] || match[0];
+		result = result.replaceAll(match[0], replacement);
 	}
 
-	// Add the last condition
-	if (currentCondition.trim()) {
-		conditions.push(currentCondition.trim());
-	}
-
-	return conditions;
+	return result;
 };
 
 /**
- * Process a single condition within an if() function
+ * Helper function to find result in rule blocks
+ * @param {Array} rules - Array of rule blocks
+ * @param {Object} bindings - Parameter bindings
+ * @returns {string|null} - Found result or null
  */
-const processSingleCondition = (condition) => {
-	// Check if this is an else clause
-	if (condition.trim().startsWith('else:')) {
-		return {
-			isElse: true,
-			value: condition.replace(/^\s*else\s*:\s*/, '').trim()
-		};
-	}
-
-	// Find the main separator colon (outside of parentheses)
-	let depth = 0;
-	let inQuotes = false;
-	let quoteChar = '';
-	let separatorIndex = -1;
-
-	for (let i = 0; i < condition.length; i++) {
-		const char = condition[i];
-		const previousChar = i > 0 ? condition[i - 1] : '';
-
-		// Handle quotes
-		if ((char === '"' || char === "'") && previousChar !== '\\') {
-			if (!inQuotes) {
-				inQuotes = true;
-				quoteChar = char;
-			} else if (char === quoteChar) {
-				inQuotes = false;
-				quoteChar = '';
-			}
-		}
-
-		// Handle parentheses depth
-		if (!inQuotes) {
-			if (char === '(') {
-				depth++;
-			} else if (char === ')') {
-				depth--;
-			} else if (char === ':' && depth === 0) {
-				// This is the main separator colon
-				separatorIndex = i;
-				break;
-			}
+const findResultInRules = (rules, bindings) => {
+	for (const innerBlock of rules) {
+		if (innerBlock.type === 'result') {
+			return substituteParameters(innerBlock.value, bindings);
 		}
 	}
 
-	if (separatorIndex === -1) {
-		log('Invalid condition format:', condition);
+	return null;
+};
+
+/**
+ * Evaluate a CSS function definition for given arguments
+ * @param {string} functionName - The function name
+ * @param {Array} arguments_ - Array of argument values
+ * @param {Object} functions - Function definitions from parsed CSS
+ * @param {Object} context - Current CSS context
+ * @returns {string|null} - Resolved value or null if not resolvable
+ */
+const evaluateFunction = (
+	functionName,
+	arguments_,
+	functions,
+	context = {}
+) => {
+	const functionDefinition = functions[functionName];
+	if (!functionDefinition) {
+		log(`Function ${functionName} not found`);
 		return null;
 	}
 
-	const conditionPart = condition.slice(0, separatorIndex).trim();
-	const valuePart = condition.slice(separatorIndex + 1).trim();
-
-	return {
-		isElse: false,
-		condition: conditionPart,
-		value: valuePart
-	};
-};
-
-/**
- * Process multiple conditions within a single if() function
- */
-const processMultipleConditions = (
-	ifContent,
-	registerForTracking = false,
-	element = null,
-	originalContent = null
-) => {
-	// Handle malformed if() functions that don't contain proper syntax
-	if (!ifContent || !ifContent.includes(':')) {
-		log('Malformed if() function - missing colon separator');
-		throw new Error('Malformed if() syntax');
-	}
-
-	const conditions = parseMultipleConditions(ifContent);
-	let elseValue = '';
-
-	// Process each condition in order
-	for (const condition of conditions) {
-		const parsed = processSingleCondition(condition);
-
-		if (!parsed) {
-			continue;
-		}
-
-		if (parsed.isElse) {
-			elseValue = parsed.value;
-			continue;
-		}
-
-		// Evaluate the condition
-		const isTrue = evaluateCondition(
-			parsed.condition,
-			registerForTracking,
-			element,
-			originalContent
-		);
-
-		if (isTrue) {
-			log(`Condition matched: ${parsed.condition} -> ${parsed.value}`);
-			return parsed.value;
-		}
-	}
-
-	// No condition matched, return else value
-	log(`No condition matched, using else value: ${elseValue}`);
-	return elseValue;
-};
-
-/**
- * Find and extract if() functions with proper nested parentheses handling
- */
-const findIfFunctions = (text) => {
-	const functions = [];
-	let index = 0;
-
-	while (index < text.length) {
-		const match = text.indexOf('if(', index);
-		if (match === -1) {
-			break;
-		}
-
-		// Make sure it's actually an if() function (not part of another word)
-		if (match > 0 && /[\w-]/.test(text[match - 1])) {
-			index = match + 1;
-			continue;
-		}
-
-		// Find the matching closing parenthesis
-		let depth = 0;
-		let inQuotes = false;
-		let quoteChar = '';
-		const start = match + 3; // Start after 'if('
-		let end = -1;
-
-		for (let i = start; i < text.length; i++) {
-			const char = text[i];
-			const previousChar = i > 0 ? text[i - 1] : '';
-
-			// Handle quotes
-			if ((char === '"' || char === "'") && previousChar !== '\\') {
-				if (!inQuotes) {
-					inQuotes = true;
-					quoteChar = char;
-				} else if (char === quoteChar) {
-					inQuotes = false;
-					quoteChar = '';
-				}
-			}
-
-			if (!inQuotes) {
-				if (char === '(') {
-					depth++;
-				} else if (char === ')') {
-					if (depth === 0) {
-						end = i;
-						break;
-					}
-
-					depth--;
-				}
-			}
-		}
-
-		if (end === -1) {
-			// Malformed if() function
-			index = match + 3;
-		} else {
-			const fullMatch = text.slice(match, end + 1);
-			const content = text.slice(start, end);
-			functions.push({
-				match: fullMatch,
-				content,
-				start: match,
-				end: end + 1
-			});
-			index = end + 1;
-		}
-	}
-
-	return functions;
-};
-
-/**
- * Process CSS text manually
- */
-const processCSSText = (cssText, options = {}, element = null) => {
-	// Set options for this processing session
-	const originalOptions = { ...polyfillOptions };
-	polyfillOptions = { ...polyfillOptions, ...options };
-
-	// Store original content for media query tracking
-	const originalContent = cssText;
+	log(`Evaluating function ${functionName} with arguments:`, arguments_);
 
 	try {
-		// Check if we should use native transformation
-		// Disable native transformation if browser APIs appear to be mocked (for testing)
-		const shouldUseNativeTransform =
-			polyfillOptions.useNativeTransform &&
-			!(
-				globalThis.matchMedia?.mockClear ||
-				globalThis.CSS?.supports?.mockClear
-			);
+		// Create parameter bindings
+		const bindings = {};
+		for (const [
+			index,
+			parameter
+		] of functionDefinition.parameters.entries()) {
+			bindings[parameter] = arguments_[index] || '';
+		}
 
-		// Try native transformation first if enabled and not in test environment
-		if (shouldUseNativeTransform) {
-			try {
-				const transformResult = runtimeTransform(cssText, element);
+		// Evaluate conditional blocks to find the result
+		for (const block of functionDefinition.body) {
+			if (block.type === 'result') {
+				// Direct result declaration
+				return substituteParameters(block.value, bindings);
+			}
 
-				if (transformResult.nativeCSS) {
-					log('Native CSS transformation applied');
+			if (block.type === 'media' || block.type === 'supports') {
+				// Check if condition matches and extract result
+				if (!evaluateCondition(block.condition, context)) {
+					continue;
 				}
 
-				// If we have runtime rules that need processing, continue with polyfill
-				if (transformResult.hasRuntimeRules) {
-					// Use processed CSS Custom Function available, otherwise continue with original
-					cssText = transformResult.processedCSS || cssText;
-				} else {
-					// All transformations were native, return original CSS
-					// The native CSS was already injected by runtimeTransform
-					return cssText;
-				}
-			} catch (error) {
-				log(
-					'Native transformation failed, falling back to polyfill:',
-					error
-				);
+				const result = findResultInRules(block.rules, bindings);
+				if (result) return result;
 			}
 		}
 
-		let result = cssText;
-		let hasChanges = true;
-
-		// Keep processing until no more if() functions are found
-		// This handles multiple if() functions in the same property value
-		while (hasChanges) {
-			hasChanges = false;
-			const ifFunctions = findIfFunctions(result);
-
-			// Process if() functions from right to left to maintain indices
-			for (let i = ifFunctions.length - 1; i >= 0; i--) {
-				const { match, content, start, end } = ifFunctions[i];
-
-				log('Processing if() function:', match);
-
-				try {
-					// Enable media query tracking if we have an element
-					const registerForTracking = element !== null;
-					const processedResult = processMultipleConditions(
-						content,
-						registerForTracking,
-						element,
-						originalContent
-					);
-					log(`Result: ${processedResult}`);
-
-					// Replace the if() function with the result
-					result =
-						result.slice(0, start) +
-						processedResult +
-						result.slice(end);
-					hasChanges = true;
-				} catch (error) {
-					log('Error processing if() function:', error);
-					// For malformed if() functions, leave them unchanged
-					// Don't remove them, as they might be valid in future CSS specs
-				}
-			}
-		}
-
-		return result;
-	} finally {
-		// Restore original options
-		polyfillOptions = originalOptions;
-	}
-};
-
-/**
- * Process a style element by rewriting its content
- */
-const processStyleElement = (styleElement) => {
-	if (styleElement.dataset.cssIfPolyfillProcessed) {
-		return; // Already processed
-	}
-
-	const originalContent = styleElement.textContent;
-	const processedContent = processCSSText(originalContent, {}, styleElement);
-
-	if (processedContent !== originalContent) {
-		log(
-			'Processing style element, original length:',
-			originalContent.length
-		);
-		styleElement.textContent = processedContent;
-		styleElement.dataset.cssIfPolyfillProcessed = 'true';
-		log('Style element processed, new length:', processedContent.length);
-	}
-};
-
-/**
- * Process all existing style elements
- */
-const processExistingStylesheets = () => {
-	// Process inline style elements
-	const styleElements = document.querySelectorAll(
-		'style:not([data-css-custom-functions-polyfill-processed])'
-	);
-	log(`Found ${styleElements.length} unprocessed style elements`);
-
-	for (const styleElement of styleElements) {
-		processStyleElement(styleElement);
-	}
-
-	// Process link stylesheets that we can access
-	const linkElements = document.querySelectorAll('link[rel="stylesheet"]');
-	for (const linkElement of linkElements) {
-		// We can't directly modify external stylesheets due to CORS,
-		// but we can try to fetch and reprocess them if they're same-origin
-		processLinkStylesheet(linkElement);
-	}
-};
-
-/**
- * Process external stylesheet (if accessible)
- */
-async function processLinkStylesheet(linkElement) {
-	if (linkElement.dataset.cssIfPolyfillProcessed) {
-		return;
-	}
-
-	// Only process same-origin stylesheets
-	try {
-		const url = new URL(linkElement.href);
-		if (url.origin !== globalThis.location.origin) {
-			log('Skipping cross-origin stylesheet:', linkElement.href);
-			return;
-		}
-
-		// Fetch the stylesheet content
-		try {
-			const response = await fetch(linkElement.href);
-			const cssText = await response.text();
-
-			// Create a new style element first so we can pass it for tracking
-			const styleElement = document.createElement('style');
-			const processedCssText = processCSSText(cssText, {}, styleElement);
-
-			if (processedCssText !== cssText) {
-				styleElement.textContent = processedCssText;
-				styleElement.dataset.cssIfPolyfillProcessed = 'true';
-				styleElement.dataset.originalHref = linkElement.href;
-
-				// Insert the style element after the link element
-				linkElement.parentNode.insertBefore(
-					styleElement,
-					linkElement.nextSibling
-				);
-
-				// Disable the original link (but don't remove it for compatibility)
-				linkElement.disabled = true;
-				linkElement.dataset.cssIfPolyfillProcessed = 'true';
-
-				log(
-					'External stylesheet processed and replaced:',
-					linkElement.href
-				);
-			}
-		} catch (error) {
-			log(
-				'Could not fetch external stylesheet:',
-				linkElement.href,
-				error
-			);
-		}
+		return null;
 	} catch (error) {
-		log('Error processing external stylesheet:', error);
+		log('Error evaluating function:', error);
+		return null;
 	}
-}
+};
+
+/**
+ * Evaluate a media query condition
+ * @param {string} condition - Media query condition like "(min-width: 768px)"
+ * @param {Object} context - Current context
+ * @returns {boolean} - Whether the media query matches
+ */
+const evaluateMediaCondition = (condition, context = {}) => {
+	if (globalThis.window === undefined) {
+		return context.assumeMatch !== false;
+	}
+
+	try {
+		const mediaQuery = globalThis.window.matchMedia(condition);
+		log('Media query evaluation:', condition, '→', mediaQuery.matches);
+		return mediaQuery.matches;
+	} catch (error) {
+		log('Media query evaluation failed:', error);
+		return false;
+	}
+};
+
+/**
+ * Evaluate a supports query condition
+ * @param {string} condition - CSS supports condition like "display: grid"
+ * @param {Object} context - Current context
+ * @returns {boolean} - Whether the feature is supported
+ */
+const evaluateSupportsCondition = (condition, context = {}) => {
+	if (
+		globalThis.CSS === undefined ||
+		typeof globalThis.CSS.supports !== 'function'
+	) {
+		return context.assumeSupported !== false;
+	}
+
+	try {
+		// Handle various supports syntax formats
+		let supports;
+		if (condition.includes(':')) {
+			// Property: value format
+			const [property, value] = condition.split(':', 2);
+			supports = globalThis.CSS.supports(property.trim(), value.trim());
+		} else {
+			// Full declaration format
+			supports = globalThis.CSS.supports(condition);
+		}
+
+		log('Supports query evaluation:', condition, '→', supports);
+		return supports;
+	} catch (error) {
+		log('Supports query evaluation failed:', error);
+		return false;
+	}
+};
+
+/**
+ * Process CSS text and resolve function calls
+ * @param {string} cssText - The CSS text to process
+ * @param {Object} functions - Function definitions
+ * @param {Object} context - Current context
+ * @returns {string} - Processed CSS with function calls resolved
+ */
+const processCSSText = (cssText, functions = {}, context = {}) => {
+	if (!cssText) return cssText;
+
+	log('Processing CSS text');
+
+	try {
+		return runtimeTransform(cssText, functions, context);
+	} catch (error) {
+		log('Error processing CSS text:', error);
+		return cssText;
+	}
+};
 
 /**
  * Register a media query for change tracking
+ * @param {string} mediaQuery - Media query string
+ * @param {HTMLElement} element - Element to track
+ * @param {string} originalContent - Original CSS content
+ * @param {MediaQueryList} mediaQueryList - MediaQueryList object
  */
-const registerMediaQuery = (
+const _registerMediaQuery = (
 	mediaQuery,
 	element,
 	originalContent,
-	mediaQueryList = null
+	mediaQueryList
 ) => {
 	if (!mediaQueryRegistry.has(mediaQuery)) {
 		mediaQueryRegistry.set(mediaQuery, new Set());
 	}
 
-	mediaQueryRegistry.get(mediaQuery).add({ element, originalContent });
+	mediaQueryRegistry.get(mediaQuery).add({
+		element,
+		originalContent
+	});
 
-	// Set up listener if not already done
 	if (!mediaQueryListeners.has(mediaQuery)) {
-		try {
-			// Use provided MediaQueryList or create a new one
-			const mql =
-				mediaQueryList || globalThis.matchMedia(`(${mediaQuery})`);
-			const listener = () => {
-				log(`Media query changed: ${mediaQuery}`);
-				reprocessElementsForMediaQuery(mediaQuery);
-			};
+		const listener = () => {
+			log(`Media query changed: ${mediaQuery}`);
+			updateElementsForMediaQuery(mediaQuery);
+		};
 
-			mql.addEventListener('change', listener);
-			mediaQueryListeners.set(mediaQuery, {
-				mediaQueryList: mql,
-				listener
-			});
+		mediaQueryList.addEventListener('change', listener);
+		mediaQueryListeners.set(mediaQuery, {
+			mediaQueryList,
+			listener
+		});
+	}
+};
 
-			log(`Registered media query listener: ${mediaQuery}`);
-		} catch (error) {
-			log(
-				`Failed to register media query listener: ${mediaQuery}`,
-				error
-			);
+/**
+ * Update elements when media query changes
+ * @param {string} mediaQuery - Media query that changed
+ */
+const updateElementsForMediaQuery = (mediaQuery) => {
+	const elementSet = mediaQueryRegistry.get(mediaQuery);
+	if (!elementSet) return;
+
+	for (const { element, originalContent } of elementSet) {
+		if (element && element.isConnected) {
+			// Re-process the original CSS content
+			const functions = extractFunctions(originalContent);
+			const processedCSS = processCSSText(originalContent, functions);
+
+			if (element.textContent !== processedCSS) {
+				element.textContent = processedCSS;
+				log('Updated element for media query change:', mediaQuery);
+			}
 		}
 	}
 };
 
 /**
- * Reprocess elements when a media query changes
+ * Process a style or link element
+ * @param {HTMLElement} element - Element to process
  */
-const reprocessElementsForMediaQuery = (mediaQuery) => {
-	const elements = mediaQueryRegistry.get(mediaQuery);
-	if (!elements) {
+const processElement = (element) => {
+	if (element.dataset.cssCustomFunctionsProcessed) {
 		return;
 	}
 
-	for (const { element, originalContent } of elements) {
-		try {
-			const processedContent = processCSSText(originalContent);
-			if (element.textContent !== processedContent) {
-				log(
-					`Updating element due to media query change: ${mediaQuery}`
-				);
-				element.textContent = processedContent;
-			}
-		} catch (error) {
-			log(
-				`Error reprocessing element for media query ${mediaQuery}:`,
-				error
-			);
+	try {
+		let cssText = '';
+
+		if (element.tagName === 'STYLE') {
+			cssText = element.textContent || '';
+		} else if (element.tagName === 'LINK' && element.rel === 'stylesheet') {
+			// For external stylesheets, we'd need to fetch and process
+			// This is more complex and would require CORS considerations
+			log('External stylesheet processing not implemented yet');
+			return;
 		}
+
+		if (!cssText.trim()) return;
+
+		// Extract function definitions from CSS
+		const functions = extractFunctions(cssText);
+
+		// Process the CSS text
+		const processedCSS = processCSSText(cssText, functions);
+
+		if (processedCSS !== cssText) {
+			element.textContent = processedCSS;
+			log('Processed element:', element.tagName);
+		}
+
+		element.dataset.cssCustomFunctionsProcessed = 'true';
+	} catch (error) {
+		log('Error processing element:', error);
+	}
+};
+
+/**
+ * Process all style elements in the document
+ */
+const processStyleElements = () => {
+	if (hasNativeSupport()) {
+		log('Native CSS Custom Functions support detected, skipping polyfill');
+		return;
+	}
+
+	log('Processing style elements');
+
+	const styleElements = document.querySelectorAll(
+		'style:not([data-css-custom-functions-processed])'
+	);
+	for (const element of styleElements) {
+		processElement(element);
+	}
+
+	const linkElements = document.querySelectorAll(
+		'link[rel="stylesheet"]:not([data-css-custom-functions-processed])'
+	);
+	for (const element of linkElements) {
+		processElement(element);
+	}
+};
+
+/**
+ * Initialize the polyfill
+ * @param {Object} options - Configuration options
+ */
+const init = (options = {}) => {
+	polyfillOptions = { ...polyfillOptions, ...options };
+
+	log('Initializing CSS Custom Functions polyfill');
+
+	if (hasNativeSupport()) {
+		log('Native support detected, polyfill not needed');
+		return;
+	}
+
+	// Process existing elements
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', processStyleElements);
+	} else {
+		processStyleElements();
+	}
+
+	// Set up mutation observer for dynamic content
+	if (globalThis.MutationObserver) {
+		const observer = new MutationObserver((mutations) => {
+			for (const mutation of mutations) {
+				for (const node of mutation.addedNodes) {
+					if (node.nodeType !== Node.ELEMENT_NODE) continue;
+
+					const element = node;
+					if (
+						element.tagName === 'STYLE' ||
+						(element.tagName === 'LINK' &&
+							element.rel === 'stylesheet')
+					) {
+						processElement(element);
+					}
+
+					// Check for nested style elements
+					const nestedStyles = element.querySelectorAll?.(
+						'style, link[rel="stylesheet"]'
+					);
+					if (!nestedStyles) continue;
+
+					for (const nestedStyle of nestedStyles) {
+						processElement(nestedStyle);
+					}
+				}
+			}
+		});
+
+		observer.observe(document, {
+			childList: true,
+			subtree: true
+		});
 	}
 };
 
 /**
  * Clean up media query listeners
  */
-const cleanupMediaQueryListeners = () => {
-	for (const [
-		mediaQuery,
-		{ mediaQueryList, listener }
-	] of mediaQueryListeners) {
-		try {
-			mediaQueryList.removeEventListener('change', listener);
-			log(`Cleaned up media query listener: ${mediaQuery}`);
-		} catch (error) {
-			log(`Error cleaning up media query listener: ${mediaQuery}`, error);
-		}
+const cleanup = () => {
+	for (const [, { mediaQueryList, listener }] of mediaQueryListeners) {
+		mediaQueryList.removeEventListener('change', listener);
 	}
 
 	mediaQueryListeners.clear();
@@ -720,103 +439,64 @@ const cleanupMediaQueryListeners = () => {
 };
 
 /**
- * Observe stylesheet changes
+ * Build-time transform for static processing
+ * @param {string} cssText - CSS text to transform
+ * @param {Object} options - Build options
+ * @returns {Object} - Result with transformed CSS and stats
  */
-const observeStylesheetChanges = () => {
-	// Create a MutationObserver to watch for new stylesheets
-	const observer = new MutationObserver((mutations) => {
-		for (const mutation of mutations) {
-			for (const node of mutation.addedNodes) {
-				if (
-					node.nodeType === Node.ELEMENT_NODE &&
-					(node.tagName === 'STYLE' || node.tagName === 'LINK')
-				) {
-					log('New style element detected:', node.tagName);
+const buildTimeTransform = (cssText, options = {}) => {
+	const functions = extractFunctions(cssText);
+	const transformedCSS = runtimeTransform(cssText, functions);
 
-					if (node.tagName === 'STYLE') {
-						// Process inline style elements immediately
-						setTimeout(() => {
-							processStyleElement(node);
-						}, 0);
-					} else if (
-						node.tagName === 'LINK' &&
-						node.rel === 'stylesheet'
-					) {
-						// Process link stylesheets after they load
-						node.addEventListener('load', () => {
-							processLinkStylesheet(node);
-						});
+	const stats = {
+		originalSize: cssText.length,
+		transformedSize: transformedCSS.length,
+		functionsFound: Object.keys(functions).length,
+		compression:
+			cssText.length === 0
+				? '0%'
+				: (
+						((cssText.length - transformedCSS.length) /
+							cssText.length) *
+						100
+					).toFixed(2) + '%'
+	};
 
-						// Also try to process immediately in case it's already loaded
-						setTimeout(() => {
-							processLinkStylesheet(node);
-						}, 100);
-					}
-				}
-			}
-		}
-	});
-
-	observer.observe(document.head, {
-		childList: true,
-		subtree: true
-	});
-
-	// Also observe the body for style elements that might be added there
-	observer.observe(document.body, {
-		childList: true,
-		subtree: true
-	});
+	return {
+		css: transformedCSS,
+		stats: options.stats ? stats : undefined
+	};
 };
 
 /**
- * Initialize the polyfill
+ * Clean up media query listeners (alias for cleanup)
  */
-const init = (options = {}) => {
-	if (globalThis.window === undefined) {
-		throw new TypeError(
-			'CSS Custom Functions polyfill requires a browser environment'
-		);
-	}
+const cleanupMediaQueryListeners = cleanup;
 
-	// Update global options
-	polyfillOptions = { ...polyfillOptions, ...options };
-
-	if (hasNativeSupport()) {
-		log('Native CSS Custom Function support detected, polyfill not needed');
-		return;
-	}
-
-	log('Initializing CSS Custom Functions polyfill');
-	processExistingStylesheets();
-	observeStylesheetChanges();
-};
-
-/**
- * Public API to manually trigger processing
- */
-const refresh = () => {
-	processExistingStylesheets();
-};
-
-// Auto-initialize if in browser and DOMContentLoaded
-if (globalThis.window !== undefined && typeof document !== 'undefined') {
-	if (document.readyState === 'loading') {
-		document.addEventListener('DOMContentLoaded', () => {
-			init();
-		});
-	} else {
-		init();
-	}
+// Auto-initialize if enabled
+if (typeof document !== 'undefined' && polyfillOptions.autoInit) {
+	init();
 }
 
-// Named exports for modern usage
-// Re-export build-time transformation
-export { buildTimeTransform } from './transform.js';
+// Export public API
 export {
+	init,
+	cleanup,
 	cleanupMediaQueryListeners,
 	hasNativeSupport,
-	init,
 	processCSSText,
-	refresh
+	evaluateFunction,
+	buildTimeTransform,
+	log
 };
+
+// Make available globally for script tags
+if (typeof globalThis !== 'undefined') {
+	globalThis.CSSCustomFunctions = {
+		init,
+		cleanup,
+		hasNativeSupport,
+		processCSSText,
+		evaluateFunction
+	};
+}
