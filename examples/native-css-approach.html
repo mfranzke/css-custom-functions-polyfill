@@ -3,17 +3,41 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Native CSS Transformation Example</title>
+		<title>CSS Custom Functions vs Native CSS</title>
 		<style>
-			/* Original CSS with if() functions */
-			.example-current {
-				/* This would be processed at runtime with JavaScript */
-				color: if(media(width >=768px): blue; else: red);
-				display: if(supports(display: subgrid): subgrid; else: grid);
-				font-size: if(
-					media(width >=1200px): 20px; media(width >=768px): 18px;
-						else: 16px
-				);
+			/* CSS Custom Functions approach */
+			@function --responsive-color() {
+				result: red;
+
+				@media (width >=768px) {
+					result: blue;
+				}
+			}
+
+			@function --progressive-display() {
+				result: grid;
+
+				@supports (display: subgrid) {
+					result: subgrid;
+				}
+			}
+
+			@function --responsive-font-size() {
+				result: 16px;
+
+				@media (width >=768px) {
+					result: 18px;
+				}
+
+				@media (width >=1200px) {
+					result: 20px;
+				}
+			}
+
+			.example-custom-functions {
+				color: --responsive-color();
+				display: --progressive-display();
+				font-size: --responsive-font-size();
 			}
 
 			/* Transformed to native CSS - much more efficient! */

@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Enhanced CSS Custom Functions Examples</title>
+		<style>
+			body {
+				font-family:
+					system-ui,
+					-apple-system,
+					sans-serif;
+				margin: 0;
+				padding: 20px;
+				background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+				min-height: 100vh;
+			}
+
+			.container {
+				max-width: 1200px;
+				margin: 0 auto;
+				background: rgba(255, 255, 255, 0.95);
+				padding: 40px;
+				border-radius: 20px;
+				box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+			}
+
+			h1 {
+				text-align: center;
+				color: #333;
+				margin-bottom: 40px;
+				font-size: 2.5em;
+			}
+
+			.demo-section {
+				margin-bottom: 50px;
+				padding: 30px;
+				background: #f8f9fa;
+				border-radius: 15px;
+				border-left: 5px solid #007acc;
+			}
+
+			.demo-section h2 {
+				color: #007acc;
+				margin-top: 0;
+			}
+
+			.code-block {
+				background: #f4f4f4;
+				padding: 20px;
+				border-radius: 8px;
+				font-family: "Courier New", monospace;
+				font-size: 14px;
+				margin: 15px 0;
+				overflow-x: auto;
+				border-left: 4px solid #007acc;
+			}
+
+			/* CSS Custom Functions for enhanced examples */
+
+			/* Enhanced border with responsive width */
+			@function --enhanced-border-width() {
+				result: 1px;
+
+				@media (width >=768px) {
+					result: 2px;
+				}
+
+				@media (width >=1200px) {
+					result: 4px;
+				}
+			}
+
+			@function --enhanced-border-style() {
+				result: solid;
+
+				@supports (border-style: dashed) {
+					result: dashed;
+				}
+			}
+
+			@function --enhanced-border-color() {
+				result: #333;
+
+				@media (prefers-color-scheme: dark) {
+					result: #fff;
+				}
+			}
+
+			/* Enhanced spacing with breakpoint variations */
+			@function --responsive-spacing() {
+				result: 10px;
+
+				@media (width >=768px) {
+					result: 20px;
+				}
+
+				@media (width >=1024px) {
+					result: 40px;
+				}
+			}
+
+			/* Enhanced typography with progressive enhancement */
+			@function --enhanced-font-weight() {
+				result: bold;
+
+				@supports (font-variation-settings: "wght" 400) {
+					result: 600;
+				}
+			}
+
+			@function --enhanced-font-size() {
+				result: 18px;
+
+				@media (width >=768px) {
+					result: 24px;
+				}
+			}
+
+			@function --enhanced-line-height() {
+				result: 1.4;
+
+				@media (width >=768px) {
+					result: 1.6;
+				}
+			}
+
+			/* Enhanced background with theme awareness */
+			@function --enhanced-bg-color() {
+				result: #ffffff;
+
+				@media (prefers-color-scheme: dark) {
+					result: #2d3748;
+				}
+			}
+
+			@function --enhanced-text-color() {
+				result: #2d3748;
+
+				@media (prefers-color-scheme: dark) {
+					result: #e2e8f0;
+				}
+			}
+
+			@function --enhanced-bg-image() {
+				result: none;
+
+				@supports (
+					background-image: linear-gradient(45deg, red, blue)
+				) {
+					result: linear-gradient(
+						45deg,
+						transparent,
+						rgba(0, 122, 204, 0.1)
+					);
+				}
+			}
+
+			/* Enhanced shadows with device capabilities */
+			@function --enhanced-box-shadow() {
+				result: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+				@media (width >=768px) {
+					result: 0 10px 15px rgba(0, 0, 0, 0.1);
+				}
+			}
+
+			@function --enhanced-transform() {
+				result: none;
+
+				@supports (transform: translateY(-5px)) {
+					result: translateY(-5px);
+				}
+			}
+
+			/* Enhanced layout with grid fallbacks */
+			@function --enhanced-display() {
+				result: block;
+
+				@supports (display: grid) {
+					result: grid;
+				}
+			}
+
+			@function --enhanced-grid-columns() {
+				result: none;
+
+				@supports (grid-template-columns: repeat(2, 1fr)) {
+					result: repeat(2, 1fr);
+				}
+
+				@media (width >=1200px) {
+					@supports (grid-template-columns: repeat(4, 1fr)) {
+						result: repeat(4, 1fr);
+					}
+				}
+			}
+
+			/* Apply the enhanced functions */
+			.enhanced-border {
+				border-width: --enhanced-border-width();
+				border-style: --enhanced-border-style();
+				border-color: --enhanced-border-color();
+				padding: 20px;
+				background: #f0f8ff;
+				border-radius: 8px;
+				margin-bottom: 20px;
+			}
+
+			.enhanced-spacing {
+				margin: --responsive-spacing();
+				padding: --responsive-spacing();
+				background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+				color: white;
+				border-radius: 12px;
+				text-align: center;
+			}
+
+			.enhanced-typography {
+				font-weight: --enhanced-font-weight();
+				font-size: --enhanced-font-size();
+				line-height: --enhanced-line-height();
+				padding: 20px;
+				background: #e3f2fd;
+				border-radius: 8px;
+				margin-bottom: 20px;
+			}
+
+			.enhanced-background {
+				background-color: --enhanced-bg-color();
+				background-image: --enhanced-bg-image();
+				color: --enhanced-text-color();
+				padding: 30px;
+				border-radius: 10px;
+				margin-bottom: 20px;
+			}
+
+			.enhanced-effects {
+				padding: 20px;
+				background: #4caf50;
+				color: white;
+				border-radius: 8px;
+				box-shadow: --enhanced-box-shadow();
+				transition: transform 0.3s ease;
+				cursor: pointer;
+				margin-bottom: 20px;
+			}
+
+			.enhanced-effects:hover {
+				transform: --enhanced-transform();
+			}
+
+			.enhanced-layout {
+				display: --enhanced-display();
+				grid-template-columns: --enhanced-grid-columns();
+				gap: 20px;
+				margin-bottom: 20px;
+			}
+
+			.enhanced-layout .item {
+				background: #9c27b0;
+				color: white;
+				padding: 20px;
+				border-radius: 8px;
+				text-align: center;
+			}
+
+			.status-indicator {
+				padding: 15px;
+				border-radius: 8px;
+				margin: 20px 0;
+				font-weight: bold;
+				text-align: center;
+			}
+
+			.polyfill-active {
+				background-color: #ff9800;
+				color: white;
+			}
+
+			.footer-note {
+				margin-top: 40px;
+				padding: 20px;
+				background-color: #e8f5e8;
+				border-radius: 10px;
+				text-align: center;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="container">
+			<h1>Enhanced CSS Custom Functions Examples</h1>
+
+			<div id="status" class="status-indicator"></div>
+
+			<div class="demo-section">
+				<h2>1. Enhanced Border Properties</h2>
+				<div class="code-block">
+					@function --enhanced-border-width() {<br />
+					&nbsp;&nbsp;result: 1px;<br />
+					&nbsp;&nbsp;@media (width >= 768px) { result: 2px; }<br />
+					&nbsp;&nbsp;@media (width >= 1200px) { result: 4px; }<br />
+					}
+				</div>
+				<div class="enhanced-border">
+					This element has a responsive border that gets thicker on
+					larger screens!
+				</div>
+			</div>
+
+			<div class="demo-section">
+				<h2>2. Enhanced Spacing System</h2>
+				<div class="code-block">
+					@function --responsive-spacing() {<br />
+					&nbsp;&nbsp;result: 10px;<br />
+					&nbsp;&nbsp;@media (width >= 768px) { result: 20px; }<br />
+					&nbsp;&nbsp;@media (width >= 1024px) { result: 40px; }<br />
+					}
+				</div>
+				<div class="enhanced-spacing">
+					This element's margin and padding scale with screen size!
+				</div>
+			</div>
+
+			<div class="demo-section">
+				<h2>3. Enhanced Typography</h2>
+				<div class="code-block">
+					@function --enhanced-font-weight() {<br />
+					&nbsp;&nbsp;result: bold;<br />
+					&nbsp;&nbsp;@supports (font-variation-settings: "wght" 400)
+					{<br />
+					&nbsp;&nbsp;&nbsp;&nbsp;result: 600;<br />
+					&nbsp;&nbsp;}<br />
+					}
+				</div>
+				<div class="enhanced-typography">
+					This text uses variable fonts when supported, with
+					responsive sizing!
+				</div>
+			</div>
+
+			<div class="demo-section">
+				<h2>4. Enhanced Background System</h2>
+				<div class="code-block">
+					@function --enhanced-bg-color() {<br />
+					&nbsp;&nbsp;result: #ffffff;<br />
+					&nbsp;&nbsp;@media (prefers-color-scheme: dark) {<br />
+					&nbsp;&nbsp;&nbsp;&nbsp;result: #2d3748;<br />
+					&nbsp;&nbsp;}<br />
+					}
+				</div>
+				<div class="enhanced-background">
+					This background adapts to your color scheme preference and
+					supports modern gradients!
+				</div>
+			</div>
+
+			<div class="demo-section">
+				<h2>5. Enhanced Visual Effects</h2>
+				<div class="code-block">
+					@function --enhanced-transform() {<br />
+					&nbsp;&nbsp;result: none;<br />
+					&nbsp;&nbsp;@supports (transform: translateY(-5px)) {<br />
+					&nbsp;&nbsp;&nbsp;&nbsp;result: translateY(-5px);<br />
+					&nbsp;&nbsp;}<br />
+					}
+				</div>
+				<div class="enhanced-effects">
+					Hover me! This element uses progressive enhancement for
+					transforms and shadows.
+				</div>
+			</div>
+
+			<div class="demo-section">
+				<h2>6. Enhanced Layout System</h2>
+				<div class="code-block">
+					@function --enhanced-display() {<br />
+					&nbsp;&nbsp;result: block;<br />
+					&nbsp;&nbsp;@supports (display: grid) { result: grid; }<br />
+					}
+				</div>
+				<div class="enhanced-layout">
+					<div class="item">Item 1</div>
+					<div class="item">Item 2</div>
+					<div class="item">Item 3</div>
+					<div class="item">Item 4</div>
+				</div>
+			</div>
+
+			<div class="footer-note">
+				<h3>🚀 Enhanced CSS Custom Functions Features:</h3>
+				<ul style="text-align: left; display: inline-block">
+					<li>✅ Progressive enhancement with @supports</li>
+					<li>✅ Responsive design with media queries</li>
+					<li>✅ Dark mode support with prefers-color-scheme</li>
+					<li>✅ Variable font support detection</li>
+					<li>✅ Modern CSS feature detection</li>
+					<li>✅ Graceful fallbacks for older browsers</li>
+				</ul>
+			</div>
+		</div>
+
+		<script src="../packages/css-custom-functions-polyfill/dist/css-custom-functions-polyfill.min.js"></script>
+		<script>
+			document.addEventListener("DOMContentLoaded", function () {
+				const statusEl = document.getElementById("status");
+
+				if (typeof CSSCustomFunctionsPolyfill !== "undefined") {
+					statusEl.textContent =
+						"Enhanced CSS Custom Functions polyfill loaded and active";
+					statusEl.className = "status-indicator polyfill-active";
+				} else {
+					statusEl.textContent =
+						"CSS Custom Functions polyfill not available";
+					statusEl.className = "status-indicator";
+				}
+			});
+		</script>
+	</body>
+</html>
