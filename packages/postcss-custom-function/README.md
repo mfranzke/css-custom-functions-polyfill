@@ -184,28 +184,43 @@ module.exports = {
 
 ### Media Queries
 
-<!-- FIXTURE: basic-media -->
+<!-- FIXTURE: basic-function -->
 
 <!-- Note: This content is automatically generated from test fixtures. Do not edit the code blocks directly - they will be overwritten during the build process. To modify test cases, edit the corresponding .input.css and .expected.css files in the test/fixtures/ directory -->
 
 **Input CSS:**
 
 ```css
-.responsive {
-	width: if(media(max-width: 768px): 100%; else: 50%);
+/* Basic custom function definition and usage */
+@function --negative(--value) {
+	result: calc(-1 * var(--value));
+}
+
+html {
+	--gap: 1em;
+	padding: --negative(var(--gap));
+}
+
+.example {
+	margin: --negative(10px);
 }
 ```
 
 **Expected Output:**
 
 ```css
-.responsive {
-	width: 50%;
+/* Basic custom function definition and usage */
+/* @function --negative(--value) {
+	result: calc(-1 * var(--value));
+} */
+
+html {
+	--gap: 1em;
+	padding: calc(-1 * 1em);
 }
-@media (max-width: 768px) {
-	.responsive {
-		width: 100%;
-	}
+
+.example {
+	margin: calc(-1 * 10px);
 }
 ```
 
@@ -213,69 +228,44 @@ module.exports = {
 
 ### Feature Support Queries
 
-<!-- FIXTURE: basic-supports -->
+<!-- FIXTURE: supports-conditional -->
 
 <!-- Note: This content is automatically generated from test fixtures. Do not edit the code blocks directly - they will be overwritten during the build process. To modify test cases, edit the corresponding .input.css and .expected.css files in the test/fixtures/ directory -->
 
 **Input CSS:**
 
 ```css
-.grid {
-	display: if(supports(display: grid): grid; else: block);
+/* Function with supports conditional */
+@function --modern-display() {
+	result: block;
+	@supports (display: grid) {
+		result: grid;
+	}
+}
+
+.layout {
+	display: --modern-display();
 }
 ```
 
 **Expected Output:**
 
 ```css
-.grid {
+/* Function with supports conditional */
+/* @function --modern-display() {
+	result: block;
+	@supports (display: grid) {
+		result: grid;
+	}
+} */
+
+.layout {
 	display: block;
 }
+
 @supports (display: grid) {
-	.grid {
+	.layout {
 		display: grid;
-	}
-}
-```
-
-<!-- /FIXTURE -->
-
-### Multiple Conditions
-
-<!-- FIXTURE: multiple-concatenated-conditions -->
-
-<!-- Note: This content is automatically generated from test fixtures. Do not edit the code blocks directly - they will be overwritten during the build process. To modify test cases, edit the corresponding .input.css and .expected.css files in the test/fixtures/ directory -->
-
-**Input CSS:**
-
-```css
-.responsive {
-	padding: if(
-		media(width >= 1200px): 40px; media(width >= 768px): 30px;
-			media(width >= 480px): 20px; else: 15px
-	);
-}
-```
-
-**Expected Output:**
-
-```css
-.responsive {
-	padding: 15px;
-}
-@media (width >= 480px) {
-	.responsive {
-		padding: 20px;
-	}
-}
-@media (width >= 768px) {
-	.responsive {
-		padding: 30px;
-	}
-}
-@media (width >= 1200px) {
-	.responsive {
-		padding: 40px;
 	}
 }
 ```

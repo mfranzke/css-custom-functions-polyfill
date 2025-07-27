@@ -2,57 +2,389 @@
 
 This document demonstrates the centralized test fixture system that provides a single source of truth for CSS test cases across all test suites.
 
-## Basic Media Query
+## Basic Custom Function
 
-<!-- FIXTURE: basic-media -->
+<!-- FIXTURE: basic-function -->
 
 <!-- Note: This content is automatically generated from test fixtures. Do not edit the code blocks directly - they will be overwritten during the build process. To modify test cases, edit the corresponding .input.css and .expected.css files in the test/fixtures/ directory -->
 
 **Input CSS:**
 
 ```css
-.responsive {
-	width: if(media(max-width: 768px): 100%; else: 50%);
+/* Basic custom function definition and usage */
+@function --negative(--value) {
+	result: calc(-1 * var(--value));
+}
+
+html {
+	--gap: 1em;
+	padding: --negative(var(--gap));
+}
+
+.example {
+	margin: --negative(10px);
 }
 ```
 
 **Expected Output:**
 
 ```css
-.responsive {
-	width: 50%;
+/* Basic custom function definition and usage */
+/* @function --negative(--value) {
+	result: calc(-1 * var(--value));
+} */
+
+html {
+	--gap: 1em;
+	padding: calc(-1 * 1em);
 }
-@media (max-width: 768px) {
-	.responsive {
-		width: 100%;
+
+.example {
+	margin: calc(-1 * 10px);
+}
+```
+
+<!-- /FIXTURE -->
+
+## Conditional Media Queries
+
+<!-- FIXTURE: conditional-media -->
+
+<!-- Note: This content is automatically generated from test fixtures. Do not edit the code blocks directly - they will be overwritten during the build process. To modify test cases, edit the corresponding .input.css and .expected.css files in the test/fixtures/ directory -->
+
+**Input CSS:**
+
+```css
+/* Function with conditional rules (media queries) */
+@function --suitable-font-size() {
+	result: 16px;
+
+	@media (width > 1000px) {
+		result: 20px;
+	}
+}
+
+.text {
+	font-size: --suitable-font-size();
+}
+```
+
+**Expected Output:**
+
+```css
+/* Function with conditional rules (media queries) */
+/* @function --suitable-font-size() {
+	result: 16px;
+	@media (width > 1000px) {
+		result: 20px;
+	}
+} */
+
+.text {
+	font-size: 16px;
+}
+
+@media (width > 1000px) {
+	.text {
+		font-size: 20px;
 	}
 }
 ```
 
 <!-- /FIXTURE -->
 
-## Basic Supports Query
+## Conditional Variables
 
-<!-- FIXTURE: basic-supports -->
+<!-- FIXTURE: conditional-variables -->
 
 <!-- Note: This content is automatically generated from test fixtures. Do not edit the code blocks directly - they will be overwritten during the build process. To modify test cases, edit the corresponding .input.css and .expected.css files in the test/fixtures/ directory -->
 
 **Input CSS:**
 
 ```css
-.grid {
-	display: if(supports(display: grid): grid; else: block);
+/* Function with local variables in conditionals */
+@function --responsive-size() {
+	--size: 16px;
+	@media (width > 1000px) {
+		--size: 20px;
+	}
+	result: var(--size);
+}
+
+.element {
+	font-size: --responsive-size();
+	padding: --responsive-size();
 }
 ```
 
 **Expected Output:**
 
 ```css
-.grid {
+/* Function with local variables in conditionals */
+/* @function --responsive-size() {
+	--size: 16px;
+	@media (width > 1000px) {
+		--size: 20px;
+	}
+	result: var(--size);
+} */
+
+.element {
+	font-size: 16px;
+	padding: 16px;
+}
+
+@media (width > 1000px) {
+	.element {
+		font-size: 20px;
+		padding: 20px;
+	}
+}
+```
+
+<!-- /FIXTURE -->
+
+## Return Type Specification
+
+<!-- FIXTURE: return-type -->
+
+<!-- Note: This content is automatically generated from test fixtures. Do not edit the code blocks directly - they will be overwritten during the build process. To modify test cases, edit the corresponding .input.css and .expected.css files in the test/fixtures/ directory -->
+
+**Input CSS:**
+
+```css
+/* Function with return type specification */
+@function --double-z() returns <number> {
+	result: calc(var(--z) * 2);
+}
+
+div {
+	--z: 3;
+	z-index: --double-z();
+}
+```
+
+**Expected Output:**
+
+```css
+/* Function with return type specification */
+/* @function --double-z() returns <number> {
+	result: calc(var(--z) * 2);
+} */
+
+div {
+	--z: 3;
+	z-index: calc(3 * 2);
+}
+```
+
+<!-- /FIXTURE -->
+
+## Nested Function Calls
+
+<!-- FIXTURE: nested-functions -->
+
+<!-- Note: This content is automatically generated from test fixtures. Do not edit the code blocks directly - they will be overwritten during the build process. To modify test cases, edit the corresponding .input.css and .expected.css files in the test/fixtures/ directory -->
+
+**Input CSS:**
+
+```css
+/* Nested function calls */
+@function --outer(--outer-arg) {
+	--outer-local: 2;
+	result: --inner();
+}
+
+@function --inner() returns <number> {
+	result: calc(var(--outer-arg) + var(--outer-local));
+}
+
+div {
+	z-index: --outer(1);
+}
+```
+
+**Expected Output:**
+
+```css
+/* Nested function calls */
+/* @function --outer(--outer-arg) {
+	--outer-local: 2;
+	result: --inner();
+}
+
+@function --inner() returns <number> {
+	result: calc(var(--outer-arg) + var(--outer-local));
+} */
+
+div {
+	z-index: calc(1 + 2);
+}
+```
+
+<!-- /FIXTURE -->
+
+## Property Shadowing
+
+<!-- FIXTURE: property-shadowing -->
+
+<!-- Note: This content is automatically generated from test fixtures. Do not edit the code blocks directly - they will be overwritten during the build process. To modify test cases, edit the corresponding .input.css and .expected.css files in the test/fixtures/ directory -->
+
+**Input CSS:**
+
+```css
+/* Function accessing custom properties from call site */
+@function --add-a-b-c(--b, --c) {
+	--c: 300;
+	result: calc(var(--a) + var(--b) + var(--c));
+}
+
+div {
+	--a: 1;
+	--b: 2;
+	--c: 3;
+	z-index: --add-a-b-c(20, 30);
+}
+```
+
+**Expected Output:**
+
+```css
+/* Function accessing custom properties from call site */
+/* @function --add-a-b-c(--b, --c) {
+	--c: 300;
+	result: calc(var(--a) + var(--b) + var(--c));
+} */
+
+div {
+	--a: 1;
+	--b: 2;
+	--c: 3;
+	z-index: calc(1 + 20 + 300);
+}
+```
+
+<!-- /FIXTURE -->
+
+## Comma-Containing Values
+
+<!-- FIXTURE: comma-values -->
+
+<!-- Note: This content is automatically generated from test fixtures. Do not edit the code blocks directly - they will be overwritten during the build process. To modify test cases, edit the corresponding .input.css and .expected.css files in the test/fixtures/ directory -->
+
+**Input CSS:**
+
+```css
+/* Function with comma-containing value in curly braces */
+@function --max-plus-x(--list, --x) {
+	result: calc(max(var(--list)) + var(--x));
+}
+
+div {
+	width: --max-plus-x({1px, 7px, 2px}, 3px);
+}
+```
+
+**Expected Output:**
+
+```css
+/* Function with comma-containing value in curly braces */
+/* @function --max-plus-x(--list, --x) {
+	result: calc(max(var(--list)) + var(--x));
+} */
+
+div {
+	width: calc(max(1px, 7px, 2px) + 3px);
+}
+```
+
+<!-- /FIXTURE -->
+
+## CSS-Wide Keywords
+
+<!-- FIXTURE: css-wide-keywords -->
+
+<!-- Note: This content is automatically generated from test fixtures. Do not edit the code blocks directly - they will be overwritten during the build process. To modify test cases, edit the corresponding .input.css and .expected.css files in the test/fixtures/ directory -->
+
+**Input CSS:**
+
+```css
+/* Function with CSS-wide keywords */
+@function --inherited-color(--fallback <color>: blue) {
+	--color: inherit;
+	result: var(--color, var(--fallback));
+}
+
+.parent {
+	color: red;
+}
+
+.child {
+	color: --inherited-color();
+	background: --inherited-color(green);
+}
+```
+
+**Expected Output:**
+
+```css
+/* Function with CSS-wide keywords */
+/* @function --inherited-color(--fallback <color>: blue) {
+	--color: inherit;
+	result: var(--color, var(--fallback));
+} */
+
+.parent {
+	color: red;
+}
+
+.child {
+	color: inherit;
+	background: green;
+}
+```
+
+<!-- /FIXTURE -->
+
+## Supports Conditionals
+
+<!-- FIXTURE: supports-conditional -->
+
+<!-- Note: This content is automatically generated from test fixtures. Do not edit the code blocks directly - they will be overwritten during the build process. To modify test cases, edit the corresponding .input.css and .expected.css files in the test/fixtures/ directory -->
+
+**Input CSS:**
+
+```css
+/* Function with supports conditional */
+@function --modern-display() {
+	result: block;
+	@supports (display: grid) {
+		result: grid;
+	}
+}
+
+.layout {
+	display: --modern-display();
+}
+```
+
+**Expected Output:**
+
+```css
+/* Function with supports conditional */
+/* @function --modern-display() {
+	result: block;
+	@supports (display: grid) {
+		result: grid;
+	}
+} */
+
+.layout {
 	display: block;
 }
+
 @supports (display: grid) {
-	.grid {
+	.layout {
 		display: grid;
 	}
 }
@@ -60,242 +392,41 @@ This document demonstrates the centralized test fixture system that provides a s
 
 <!-- /FIXTURE -->
 
-## Basic Style Query (Runtime Processing)
+## No Custom Functions
 
-<!-- FIXTURE: basic-style -->
-
-<!-- Note: This content is automatically generated from test fixtures. Do not edit the code blocks directly - they will be overwritten during the build process. To modify test cases, edit the corresponding .input.css and .expected.css files in the test/fixtures/ directory -->
-
-**Input CSS:**
-
-```css
-.test {
-	color: if(style(--theme): var(--primary) ; else: blue);
-}
-```
-
-**Expected Output:**
-
-```css
-.test {
-	color: blue;
-}
-```
-
-<!-- /FIXTURE -->
-
-## Multiple Functions in One Rule
-
-<!-- FIXTURE: multiple-functions-one-rule -->
+<!-- FIXTURE: no-custom-functions -->
 
 <!-- Note: This content is automatically generated from test fixtures. Do not edit the code blocks directly - they will be overwritten during the build process. To modify test cases, edit the corresponding .input.css and .expected.css files in the test/fixtures/ directory -->
 
 **Input CSS:**
 
 ```css
-.example {
-	color: if(media(max-width: 768px): blue; else: red);
-	font-size: if(supports(display: grid): 1.2rem; else: 1rem);
-}
-```
-
-**Expected Output:**
-
-```css
-.example {
-	color: red;
-}
-@media (max-width: 768px) {
-	.example {
-		color: blue;
-	}
-}
-.example {
-	font-size: 1rem;
-}
-@supports (display: grid) {
-	.example {
-		font-size: 1.2rem;
-	}
-}
-```
-
-<!-- /FIXTURE -->
-
-## Multiple Concatenated Conditions
-
-<!-- FIXTURE: multiple-concatenated-conditions -->
-
-<!-- Note: This content is automatically generated from test fixtures. Do not edit the code blocks directly - they will be overwritten during the build process. To modify test cases, edit the corresponding .input.css and .expected.css files in the test/fixtures/ directory -->
-
-**Input CSS:**
-
-```css
-.responsive {
-	padding: if(
-		media(width >= 1200px): 40px; media(width >= 768px): 30px;
-			media(width >= 480px): 20px; else: 15px
-	);
-}
-```
-
-**Expected Output:**
-
-```css
-.responsive {
-	padding: 15px;
-}
-@media (width >= 480px) {
-	.responsive {
-		padding: 20px;
-	}
-}
-@media (width >= 768px) {
-	.responsive {
-		padding: 30px;
-	}
-}
-@media (width >= 1200px) {
-	.responsive {
-		padding: 40px;
-	}
-}
-```
-
-<!-- /FIXTURE -->
-
-## Mixed Conditions (Build-time and Runtime)
-
-<!-- FIXTURE: mixed-conditions -->
-
-<!-- Note: This content is automatically generated from test fixtures. Do not edit the code blocks directly - they will be overwritten during the build process. To modify test cases, edit the corresponding .input.css and .expected.css files in the test/fixtures/ directory -->
-
-**Input CSS:**
-
-```css
-.test {
-	color: if(media(min-width: 768px): blue; else: red);
-	background: if(style(--dark-mode): black; else: white);
-}
-```
-
-**Expected Output:**
-
-```css
-.test {
-	color: red;
-}
-@media (min-width: 768px) {
-	.test {
-		color: blue;
-	}
-}
-.test {
-	background: white;
-}
-```
-
-<!-- /FIXTURE -->
-
-## Complex Media Query
-
-<!-- FIXTURE: complex-media-query -->
-
-<!-- Note: This content is automatically generated from test fixtures. Do not edit the code blocks directly - they will be overwritten during the build process. To modify test cases, edit the corresponding .input.css and .expected.css files in the test/fixtures/ directory -->
-
-**Input CSS:**
-
-```css
-.responsive {
-	width: if(
-		media((min-width: 768px) and (max-width: 1024px)): 50%; else: 100%
-	);
-}
-```
-
-**Expected Output:**
-
-```css
-.responsive {
-	width: 100%;
-}
-@media ((min-width: 768px) and (max-width: 1024px)) {
-	.responsive {
-		width: 50%;
-	}
-}
-```
-
-<!-- /FIXTURE -->
-
-## CSS with Comments Preserved
-
-<!-- FIXTURE: with-comments -->
-
-<!-- Note: This content is automatically generated from test fixtures. Do not edit the code blocks directly - they will be overwritten during the build process. To modify test cases, edit the corresponding .input.css and .expected.css files in the test/fixtures/ directory -->
-
-**Input CSS:**
-
-```css
-/* Header styles */
-.header {
-	background: blue;
-}
-
-.conditional {
-	color: if(media(max-width: 768px): red; else: blue);
-}
-
-/* Footer styles */
-.footer {
-	background: gray;
-}
-```
-
-**Expected Output:**
-
-```css
-/* Header styles */
-.header {
-	background: blue;
-}
-.conditional {
-	color: blue;
-}
-@media (max-width: 768px) {
-	.conditional {
-		color: red;
-	}
-}
-/* Footer styles */
-.footer {
-	background: gray;
-}
-```
-
-<!-- /FIXTURE -->
-
-## CSS Without if() Functions
-
-<!-- FIXTURE: no-if-functions -->
-
-<!-- Note: This content is automatically generated from test fixtures. Do not edit the code blocks directly - they will be overwritten during the build process. To modify test cases, edit the corresponding .input.css and .expected.css files in the test/fixtures/ directory -->
-
-**Input CSS:**
-
-```css
+/* No custom functions - should pass through unchanged */
 .normal {
 	color: red;
-	font-size: 1rem;
+	background: blue;
+	font-size: 16px;
+}
+
+.also-normal {
+	display: flex;
+	justify-content: center;
 }
 ```
 
 **Expected Output:**
 
 ```css
+/* No custom functions - should pass through unchanged */
 .normal {
 	color: red;
-	font-size: 1rem;
+	background: blue;
+	font-size: 16px;
+}
+
+.also-normal {
+	display: flex;
+	justify-content: center;
 }
 ```
 
