@@ -59,14 +59,16 @@
 			/* CSS Custom Functions examples - these will be processed by the polyfill */
 			@function --responsive-font-size() {
 				result: 16px;
-				@media (width >= 768px) {
+
+				@media (width >=768px) {
 					result: 24px;
 				}
 			}
 
 			@function --responsive-color() {
 				result: #666;
-				@media (width >= 768px) {
+
+				@media (width >=768px) {
 					result: #333;
 				}
 			}
@@ -78,6 +80,7 @@
 
 			@function --grid-display() {
 				result: flex;
+
 				@supports (display: grid) {
 					result: grid;
 				}
@@ -85,6 +88,7 @@
 
 			@function --grid-gap() {
 				result: 0;
+
 				@supports (gap) {
 					result: 20px;
 				}
@@ -92,6 +96,7 @@
 
 			@function --grid-columns() {
 				result: none;
+
 				@supports (display: grid) {
 					result: repeat(3, 1fr);
 				}
@@ -105,6 +110,7 @@
 
 			@function --grid-item-margin() {
 				result: 10px;
+
 				@supports (gap) {
 					result: 0;
 				}
@@ -119,6 +125,7 @@
 
 			@function --custom-props-bg() {
 				result: #f44336;
+
 				@supports (--custom: value) {
 					result: #4caf50;
 				}
@@ -134,6 +141,7 @@
 
 			@function --theme-bg() {
 				result: #fff;
+
 				@media (prefers-color-scheme: dark) {
 					result: #333;
 				}
@@ -141,6 +149,7 @@
 
 			@function --theme-color() {
 				result: #333;
+
 				@media (prefers-color-scheme: dark) {
 					result: #fff;
 				}
@@ -148,6 +157,7 @@
 
 			@function --theme-border() {
 				result: #ddd;
+
 				@media (prefers-color-scheme: dark) {
 					result: #555;
 				}
@@ -163,6 +173,7 @@
 
 			@function --hover-bg() {
 				result: #90caf9;
+
 				@supports (: hover) {
 					result: #2196f3;
 				}
@@ -179,6 +190,7 @@
 
 			@function --hover-active-bg() {
 				result: #2196f3;
+
 				@supports (: hover) {
 					result: #1976d2;
 				}
@@ -186,6 +198,7 @@
 
 			@function --hover-transform() {
 				result: none;
+
 				@supports (transform) {
 					result: translateY(-2px);
 				}
@@ -232,12 +245,19 @@
 			button:hover {
 				background-color: #005a9e;
 			}
+
+			.footer-note {
+				margin-top: 40px;
+				padding: 20px;
+				background-color: #e8f5e8;
+				border-radius: 5px;
+			}
 		</style>
 	</head>
 
 	<body>
 		<div class="container">
-			<h1>CSS Custom Function Function Polyfill Examples</h1>
+			<h1>CSS Custom Functions polyfill Examples</h1>
 
 			<div id="status" class="status-indicator"></div>
 
@@ -273,12 +293,15 @@
 			<div class="example">
 				<h3>2. Grid with Flexbox Fallback</h3>
 				<div class="example-code">
+					@function --grid-display() {<br />
+					&nbsp;&nbsp;result: flex;<br />
+					&nbsp;&nbsp;@supports (display: grid) {<br />
+					&nbsp;&nbsp;&nbsp;&nbsp;result: grid;<br />
+					&nbsp;&nbsp;}<br />
+					}<br />
+					<br />
 					.grid-fallback {<br />
-					&nbsp;&nbsp;display: if(supports(display: grid): grid; else:
-					flex);<br />
-					&nbsp;&nbsp;gap: if(supports(gap): 20px; else: 0);<br />
-					&nbsp;&nbsp;grid-template-columns: if(supports(display:
-					grid): repeat(3, 1fr));<br />
+					&nbsp;&nbsp;display: --grid-display();<br />
 					}
 				</div>
 				<div class="example-result">
@@ -293,10 +316,15 @@
 			<div class="example">
 				<h3>3. Custom Properties Support Detection</h3>
 				<div class="example-code">
+					@function --custom-props-bg() {<br />
+					&nbsp;&nbsp;result: #f44336;<br />
+					&nbsp;&nbsp;@supports (--custom: value) {<br />
+					&nbsp;&nbsp;&nbsp;&nbsp;result: #4caf50;<br />
+					&nbsp;&nbsp;}<br />
+					}<br />
+					<br />
 					.custom-property-check {<br />
-					&nbsp;&nbsp;background-color: if(supports(--custom: value):
-					#4caf50; else: #f44336);<br />
-					&nbsp;&nbsp;color: white;<br />
+					&nbsp;&nbsp;background-color: --custom-props-bg();<br />
 					}
 				</div>
 				<div class="example-result custom-property-check">
@@ -317,11 +345,15 @@
 					for this.
 				</p>
 				<div class="example-code">
+					@function --theme-bg() {<br />
+					&nbsp;&nbsp;result: #fff;<br />
+					&nbsp;&nbsp;@media (prefers-color-scheme: dark) {<br />
+					&nbsp;&nbsp;&nbsp;&nbsp;result: #333;<br />
+					&nbsp;&nbsp;}<br />
+					}<br />
+					<br />
 					.theme-aware {<br />
-					&nbsp;&nbsp;background-color: if(media(prefers-color-scheme:
-					dark): #333; else: #fff);<br />
-					&nbsp;&nbsp;color: if(media(prefers-color-scheme: dark):
-					#fff; else: #333);<br />
+					&nbsp;&nbsp;background-color: --theme-bg();<br />
 					}
 				</div>
 				<div class="example-result theme-aware">
@@ -332,11 +364,15 @@
 			<div class="example">
 				<h3>5. Hover Effects with Fallback</h3>
 				<div class="example-code">
+					@function --hover-bg() {<br />
+					&nbsp;&nbsp;result: #90caf9;<br />
+					&nbsp;&nbsp;@supports (:hover) {<br />
+					&nbsp;&nbsp;&nbsp;&nbsp;result: #2196f3;<br />
+					&nbsp;&nbsp;}<br />
+					}<br />
+					<br />
 					.hover-effect {<br />
-					&nbsp;&nbsp;background-color: if(supports(:hover): #2196f3;
-					else: #90caf9);<br />
-					&nbsp;&nbsp;transform: if(supports(transform):
-					translateY(-2px));<br />
+					&nbsp;&nbsp;background-color: --hover-bg();<br />
 					}
 				</div>
 				<div class="example-result hover-effect">
@@ -348,8 +384,9 @@
 				<h3>6. Manual CSS Processing</h3>
 				<div class="example-code">
 					<div id="manual-css-input">
-						.test { color: if(style(--true): red; else: blue);
-						background: if(false: white; else: yellow); }
+						@function --test-color() { result: blue; @supports
+						(display: grid) { result: red; } } .test { color:
+						--test-color(); background: yellow; }
 					</div>
 				</div>
 				<div class="example-result">
@@ -357,6 +394,18 @@
 						Click "Test CSS Processing" button to see the result
 					</div>
 				</div>
+			</div>
+
+			<div class="footer-note">
+				<h3>🚀 CSS Custom Functions Features Demonstrated:</h3>
+				<ul>
+					<li>✅ Basic function definitions</li>
+					<li>✅ Responsive design with @media queries</li>
+					<li>✅ Grid fallbacks with @supports</li>
+					<li>✅ Custom property detection</li>
+					<li>✅ Theme-aware color functions</li>
+					<li>✅ Interactive hover effects</li>
+				</ul>
 			</div>
 		</div>
 
@@ -438,11 +487,25 @@
 				setTimeout(() => {
 					const dynamicStyle = document.createElement("style");
 					dynamicStyle.textContent = `
-                  .dynamic-content {
-                      color: if(media(width >= 1024px): purple; else: orange);
-                      font-weight: if(supports(font-variation-settings: "wght" 400): 600; else: bold);
-                  }
-              `;
+						@function --dynamic-color() {
+							result: orange;
+							@media (width >= 1024px) {
+								result: purple;
+							}
+						}
+
+						@function --dynamic-weight() {
+							result: bold;
+							@supports (font-variation-settings: "wght" 400) {
+								result: 600;
+							}
+						}
+
+						.dynamic-content {
+							color: --dynamic-color();
+							font-weight: --dynamic-weight();
+						}
+					`;
 					document.head.appendChild(dynamicStyle);
 
 					const dynamicDiv = document.createElement("div");
