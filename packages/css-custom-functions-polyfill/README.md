@@ -15,7 +15,7 @@
 [![Open Source Love](https://badges.frapsoft.com/os/v3/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.0-4baaaa.svg)](CODE-OF-CONDUCT.md)
 
-A modern JavaScript polyfill for the [CSS `if()` function](https://developer.mozilla.org/en-US/docs/Web/CSS/if) with **hybrid build-time and runtime processing**. Transforms CSS `if()` functions to native `@media` and `@supports` rules where possible, with runtime fallback for dynamic conditions.
+A modern JavaScript polyfill for the [CSS Custom Functions](https://drafts.csswg.org/css-mixins-1/) with **hybrid build-time and runtime processing**. Transforms CSS Custom Functions with `@function` definitions to optimized CSS where possible, with runtime fallback for dynamic conditions.
 
 ## Features
 
@@ -89,9 +89,20 @@ const polyfill = init({
 ```javascript
 import { processCSSText } from "css-custom-functions-polyfill";
 
-const css = ".button { color: if(media(width >= 768px): blue; else: red); }";
+const css = `
+@function --theme-color(--color) {
+  @media (prefers-color-scheme: dark) {
+    result: var(--color, #ffffff);
+  }
+  result: var(--color, #000000);
+}
+
+.button { 
+  color: --theme-color(blue); 
+}
+`;
 const processed = processCSSText(css);
-console.log(processed); // .button { color: red; } @media(width >= 768px) { .button { color: blue; } }
+console.log(processed); // Transformed CSS with media queries
 ```
 
 ## CSS Custom Function Syntax
@@ -110,89 +121,126 @@ The polyfill supports the following CSS Custom Function syntax:
 
 ## Enhanced Features
 
-### 1. Multiple Conditions within Single if()
+### 1. Multiple Conditions with CSS Custom Functions
 
-You can now use multiple conditions within a single `if()` function, where each condition is tested sequentially until one matches:
+You can now use conditional logic within CSS Custom Functions using `@media` and `@supports` rules:
 
 ```css
+@function --responsive-background(--scheme) {
+	@media (prefers-color-scheme: dark) {
+		result: linear-gradient(#1a1a1a, #333333);
+	}
+	@media (min-width: 768px) {
+		result: linear-gradient(#f0f9ff, #e0f2fe);
+	}
+	result: linear-gradient(#e5e7eb, #f9fafb);
+}
+
 .element {
-	/* Multiple conditions tested in order */
-	background: if(
-		style(--scheme: ice): linear-gradient(#caf0f8, white, #caf0f8) ;
-			style(--scheme: fire): linear-gradient(#ffc971, white, #ffc971) ;
-			style(--scheme: earth): linear-gradient(#8fbc8f, white, #8fbc8f) ;
-			else: linear-gradient(#e0e0e0, white, #e0e0e0) ;
-	);
+	background: --responsive-background();
 }
 ```
 
-### 2. Shorthand Property Support
+### 2. Advanced CSS Custom Functions
 
-Use if() functions within CSS shorthand properties:
+Use CSS Custom Functions for complex styling logic:
 
 ```css
-.element {
-	/* Border shorthand with conditional values */
-	border: if(
-			style(--scheme: ice): 3px; style(--scheme: fire): 5px; else: 1px;
-		)
-		if(supports(border-style: dashed): dashed; else: solid)
-		if(
-			style(--scheme: ice): #0ea5e9; style(--scheme: fire): #f97316;
-				else: #6b7280
-		);
+@function --border-style() {
+	@supports (border-style: dashed) {
+		result: dashed;
+	}
+	result: solid;
+}
 
-	/* Font shorthand with multiple conditions */
-	font:
-		if(
-				media(width >= 1200px): bold; media(width >= 768px): 600;
-					else: normal
-			)
-			if(media(width >= 768px): 18px; else: 14px) / 1.5 system-ui,
+@function --responsive-font() {
+	@media (min-width: 1200px) {
+		result:
+			bold 20px / 1.5 system-ui,
+			sans-serif;
+	}
+	@media (min-width: 768px) {
+		result:
+			600 18px / 1.5 system-ui,
+			sans-serif;
+	}
+	result:
+		normal 16px / 1.5 system-ui,
 		sans-serif;
+}
+
+.element {
+	border: 3px --border-style() #6b7280;
+	font: --responsive-font();
 }
 ```
 
 ## Supported Condition Types
 
-### 1. Media Queries with `media()`
+### 1. Media Queries with `@media`
 
 ```css
+@function --responsive-font() {
+	@media (min-width: 1200px) {
+		result: 24px;
+	}
+	@media (min-width: 768px) {
+		result: 18px;
+	}
+	result: 16px;
+}
+
 .responsive-text {
-	font-size: if(
-		media(width >= 1200px): 24px; media(width >= 768px): 18px; else: 16px
-	);
+	font-size: --responsive-font();
 }
 ```
 
-### 2. Feature Detection with `supports()`
+### 2. Feature Detection with `@supports`
 
 ```css
+@function --modern-display() {
+	@supports (display: subgrid) {
+		result: subgrid;
+	}
+	@supports (display: grid) {
+		result: grid;
+	}
+	@supports (display: flex) {
+		result: flex;
+	}
+	result: block;
+}
+
 .modern-layout {
-	display: if(
-		supports(display: subgrid): subgrid; supports(display: grid): grid;
-			supports(display: flex): flex; else: block
-	);
+	display: --modern-display();
 }
 ```
 
-### 3. Style Queries with `style()`
+### 3. Custom Property Conditions
 
 ```css
+@function --theme-color(--theme, --fallback) {
+	result: var(--theme, var(--fallback, #374151));
+}
+
 .theme-aware {
-	color: if(
-		style(--theme: dark): white; style(--theme: light): black;
-			style(--theme: blue): #1e40af; else: #374151
-	);
+	color: --theme-color(var(--primary-color), #2563eb);
 }
 ```
 
-### 4. Boolean Conditions
+### 4. Combined Conditions
 
 ```css
+@function --debug-style(--enabled) {
+	@media (prefers-color-scheme: dark) {
+		result: 2px solid #ef4444;
+	}
+	result: var(--enabled, none);
+}
+
 .debug-mode {
-	border: if(style(--true): 2px solid red; else: none);
-	opacity: if(style(--false): 0.5; else: 1);
+	border: --debug-style(var(--debug));
+	opacity: var(--debug, 1);
 }
 ```
 
@@ -201,73 +249,108 @@ Use if() functions within CSS shorthand properties:
 ### Theme-Based Styling
 
 ```css
-.card {
-	background: if(
-		style(--scheme: ice): linear-gradient(135deg, #caf0f8, white, #caf0f8) ;
-			style(--scheme: fire): linear-gradient(
-				135deg,
-				#ffc971,
-				white,
-				#ffc971
-			)
-			;
-			style(--scheme: earth): linear-gradient(
-				135deg,
-				#8fbc8f,
-				white,
-				#8fbc8f
-			)
-			; else: linear-gradient(135deg, #e0e0e0, white, #e0e0e0) ;
-	);
+@function --card-background(--scheme) {
+	/* Ice theme */
+	result: linear-gradient(135deg, #caf0f8, #f0f9ff, #caf0f8);
+}
 
-	color: if(
-		style(--theme: dark): #e2e8f0; style(--theme: light): #2d3748;
-			style(--theme: blue): #1e40af; else: #374151;
-	);
+@function --theme-text-color(--theme) {
+	result: var(--theme, #374151);
+}
+
+.card {
+	background: --card-background();
+	color: --theme-text-color(var(--text-color));
 }
 ```
 
 ### Progressive Enhancement
 
 ```css
-.feature-demo {
-	display: if(
-		supports(display: subgrid): subgrid; supports(display: grid): grid;
-			supports(display: flex): flex; else: block;
-	);
+@function --enhanced-display() {
+	@supports (display: subgrid) {
+		result: subgrid;
+	}
+	@supports (display: grid) {
+		result: grid;
+	}
+	@supports (display: flex) {
+		result: flex;
+	}
+	result: block;
+}
 
-	gap: if(supports(gap): 20px; else: 0;);
+@function --spacing() {
+	@supports (gap) {
+		result: 20px;
+	}
+	result: 0;
+}
+
+.feature-demo {
+	display: --enhanced-display();
+	gap: --spacing();
 }
 ```
 
 ### Responsive Design with Multiple Breakpoints
 
 ```css
-.responsive-element {
-	padding: if(
-		media(width >= 1200px): 40px; media(width >= 768px): 30px;
-			media(width >= 480px): 20px; else: 15px;
-	);
+@function --responsive-padding() {
+	@media (min-width: 1200px) {
+		result: 40px;
+	}
+	@media (min-width: 768px) {
+		result: 30px;
+	}
+	@media (min-width: 480px) {
+		result: 20px;
+	}
+	result: 15px;
+}
 
-	font-size: if(
-		media(width >= 1200px): 20px; media(width >= 768px): 18px; else: 16px;
-	);
+@function --responsive-font() {
+	@media (min-width: 1200px) {
+		result: 20px;
+	}
+	@media (min-width: 768px) {
+		result: 18px;
+	}
+	result: 16px;
+}
+
+.responsive-element {
+	padding: --responsive-padding();
+	font-size: --responsive-font();
 }
 ```
 
 ### Accessibility-Aware Animations
 
 ```css
-.animated-element {
-	transition: if(
-		media(prefers-reduced-motion: reduce): none; supports(transition): all
-			0.3s ease; else: none;
-	);
+@function --safe-transition() {
+	@media (prefers-reduced-motion: reduce) {
+		result: none;
+	}
+	@supports (transition) {
+		result: all 0.3s ease;
+	}
+	result: none;
+}
 
-	transform: if(
-		media(prefers-reduced-motion: reduce): none;
-			supports(transform): scale(1) ; else: none;
-	);
+@function --safe-transform() {
+	@media (prefers-reduced-motion: reduce) {
+		result: none;
+	}
+	@supports (transform) {
+		result: scale(1);
+	}
+	result: none;
+}
+
+.animated-element {
+	transition: --safe-transition();
+	transform: --safe-transform();
 }
 ```
 
@@ -286,17 +369,20 @@ const polyfill = init({
 
 ### `processCSSText(cssText, options)`
 
-Process CSS text containing if() functions.
+Process CSS text containing CSS Custom Functions.
 
 ```javascript
 const processed = processCSSText(`
-  .test {
-    color: if(
-      style(--theme: dark): white;
-      style(--theme: light): black;
-      else: gray;
-    );
+@function --theme-color(--mode) {
+  @media (prefers-color-scheme: dark) {
+    result: #e2e8f0;
   }
+  result: #2d3748;
+}
+
+.test {
+  color: --theme-color();
+}
 `);
 ```
 
