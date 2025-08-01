@@ -1,6 +1,6 @@
 # Configuration: Each entry is an array with [pattern, command, description]
+# Format: "pattern" "command" "pattern description"
 CHECKS=(
-  # Format: "pattern" "command" "pattern description"
   '^(package\.json|pnpm-lock\.yaml)$' 'pnpm install --lockfile-only --ignore-scripts' 'package.json or pnpm-lock.yaml – please run pnpm install to update dependencies'
 )
 
@@ -8,8 +8,14 @@ CHECKS=(
 ## Get the upstream branch
 UPSTREAM=$(git rev-parse --abbrev-ref --symbolic-full-name @{u} 2>/dev/null || echo "")
 if [ -z "$UPSTREAM" ]; then
-  echo "No upstream configured, skipping pre-push checks."
-  exit 0
+  echo "No upstream configured, detecting default branch."
+  # Try to detect the default branch from origin/HEAD
+  DEFAULT_BRANCH=$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@')
+  if [ -z "$DEFAULT_BRANCH" ]; then
+    echo "Could not detect default branch, falling back to 'main'."
+    DEFAULT_BRANCH="main"
+  fi
+  UPSTREAM="$DEFAULT_BRANCH"
 fi
 
 ## Get the list of files changed between upstream and HEAD
