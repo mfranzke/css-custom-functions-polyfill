@@ -97,8 +97,8 @@ const css = `
   result: var(--color, #000000);
 }
 
-.button { 
-  color: --theme-color(blue); 
+.button {
+  color: --theme-color(blue);
 }
 `;
 const processed = processCSSText(css);
