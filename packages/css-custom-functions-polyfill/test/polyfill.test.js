@@ -1,7 +1,12 @@
 /* global document, describe, test, expect, beforeEach, afterEach */
 
-import { vi } from 'vitest';
-import { hasNativeSupport, init, processCSSText } from '../src/index.js';
+import {
+	evaluateFunction,
+	hasNativeSupport,
+	init,
+	processCSSText
+} from '../src/index.js';
+import { extractFunctions } from '../src/transform.js';
 
 describe('CSS Custom Functions polyfill', () => {
 	beforeEach(() => {
@@ -22,12 +27,7 @@ describe('CSS Custom Functions polyfill', () => {
 			expect(typeof init).toBe('function');
 			expect(typeof processCSSText).toBe('function');
 			expect(typeof hasNativeSupport).toBe('function');
-		});
-
-		test('should have named function exports', () => {
-			expect(typeof init).toBe('function');
-			expect(typeof processCSSText).toBe('function');
-			expect(typeof hasNativeSupport).toBe('function');
+			expect(typeof evaluateFunction).toBe('function');
 		});
 	});
 
@@ -41,121 +41,140 @@ describe('CSS Custom Functions polyfill', () => {
 		});
 	});
 
-	describe('Condition Evaluation', () => {
-		test('should evaluate boolean conditions through processCSSText', () => {
-			let result = processCSSText(
-				'.test { color: if(style(--true): red; else: blue); }'
-			);
-			expect(result).toBe('.test { color: blue; }');
+	describe('Function Definition and Evaluation', () => {
+		test('should extract CSS Custom Function definitions', () => {
+			const cssText = `
+				@function --color-theme(--mode) {
+					result: var(--mode, blue);
+				}
+			`;
 
-			result = processCSSText(
-				'.test { color: if(false: red; else: blue); }'
-			);
-			expect(result).toBe('.test { color: blue; }');
+			const functions = extractFunctions(cssText);
+			expect(functions).toHaveProperty('--color-theme');
+			expect(functions['--color-theme'].parameters).toEqual(['--mode']);
 		});
 
-		test('should evaluate media conditions through processCSSText', () => {
+		test('should evaluate simple CSS Custom Function calls', () => {
+			const cssText = `
+				@function --color-theme(--mode) {
+					result: var(--mode, blue);
+				}
+				.test { color: --color-theme(red); }
+			`;
+
+			const result = processCSSText(cssText);
+			expect(result).toContain('color: red');
+			expect(result).not.toContain('@function');
+		});
+
+		test('should handle CSS Custom Functions with default values', () => {
+			const cssText = `
+				@function --spacing(--size) {
+					result: var(--size, 16px);
+				}
+				.test { margin: --spacing(); }
+			`;
+
+			const result = processCSSText(cssText);
+			expect(result).toContain('margin: 16px');
+		});
+
+		test('should handle CSS Custom Functions with media queries', () => {
 			// Mock a matching media query
 			globalThis.matchMedia.mockReturnValue({ matches: true });
 
-			const result = processCSSText(
-				'.test { color: if(media(width >= 768px): red; else: blue); }'
-			);
-			expect(result).toBe('.test { color: red; }');
-			expect(globalThis.matchMedia).toHaveBeenCalledWith(
-				'(width >= 768px)'
-			);
+			const cssText = `
+				@function --responsive-size(--size) {
+					@media (min-width: 768px) {
+						result: calc(var(--size) * 1.5);
+					}
+					result: var(--size);
+				}
+				.test { font-size: --responsive-size(16px); }
+			`;
+
+			const result = processCSSText(cssText);
+			expect(result).toContain('font-size: calc(16px * 1.5)');
 		});
 
-		test('should evaluate supports conditions through processCSSText', () => {
+		test('should handle CSS Custom Functions with supports queries', () => {
 			// Mock CSS.supports to return true
 			globalThis.CSS.supports.mockReturnValue(true);
 
-			const result = processCSSText(
-				'.test { color: if(supports(display: grid): red; else: blue); }'
-			);
-			expect(result).toBe('.test { color: red; }');
-			expect(globalThis.CSS.supports).toHaveBeenCalledWith(
-				'display: grid'
-			);
-		});
+			const cssText = `
+				@function --modern-display(--fallback) {
+					@supports (display: grid) {
+						result: grid;
+					}
+					result: var(--fallback);
+				}
+				.test { display: --modern-display(block); }
+			`;
 
-		test('should evaluate style conditions through processCSSText', () => {
-			// Create a test element
-			const testElement = document.createElement('div');
-			testElement.style.color = 'red';
-			document.body.append(testElement);
-
-			// Mock getComputedStyle
-			const mockComputedStyle = {
-				getPropertyValue: vi.fn().mockReturnValue('red')
-			};
-
-			vi.spyOn(globalThis, 'getComputedStyle').mockReturnValue(
-				mockComputedStyle
-			);
-
-			const result = processCSSText(
-				'.test { color: if(style(color: red): green; else: blue); }'
-			);
-			expect(result).toBe('.test { color: green; }');
-
-			// Cleanup
-			testElement.remove();
-			globalThis.getComputedStyle.mockRestore();
+			const result = processCSSText(cssText);
+			expect(result).toContain('display: grid');
 		});
 	});
 
 	describe('CSS Text Processing', () => {
-		test('should process simple if() function with new syntax', () => {
-			const cssText =
-				'.test { color: if(style(--true): red; else: blue); }';
-			const result = processCSSText(cssText);
+		test('should process multiple CSS Custom Functions', () => {
+			const cssText = `
+				@function --spacing(--size) {
+					result: var(--size, 16px);
+				}
+				@function --color(--hue) {
+					result: hsl(var(--hue), 50%, 50%);
+				}
+				.test {
+					margin: --spacing(24px);
+					color: --color(200deg);
+				}
+			`;
 
-			expect(result).toBe('.test { color: blue; }');
+			const result = processCSSText(cssText);
+			expect(result).toContain('margin: 24px');
+			expect(result).toContain('color: hsl(200deg, 50%, 50%)');
+			expect(result).not.toContain('@function');
 		});
 
-		test('should process if() without else clause', () => {
-			const cssText = '.test { color: if(style(--true): red); }';
-			const result = processCSSText(cssText);
+		test('should handle CSS Custom Functions without parameters', () => {
+			const cssText = `
+				@function --primary-color() {
+					result: #007bff;
+				}
+				.test { color: --primary-color(); }
+			`;
 
-			expect(result).toBe('.test { color: ; }');
+			const result = processCSSText(cssText);
+			expect(result).toContain('color: #007bff');
 		});
 
-		test('should process if() with media condition', () => {
-			// Mock media query to match
-			globalThis.matchMedia.mockReturnValue({ matches: true });
+		test('should preserve CSS that does not contain Custom Functions', () => {
+			const cssText = `
+				.test {
+					color: blue;
+					margin: 16px;
+				}
+			`;
 
-			const cssText =
-				'.test { display: if(media(width >= 768px): block; else: none); }';
 			const result = processCSSText(cssText);
-
-			expect(result).toBe('.test { display: block; }');
+			expect(result).toContain('color: blue');
+			expect(result).toContain('margin: 16px');
 		});
 
-		test('should process if() with supports condition', () => {
-			globalThis.CSS.supports.mockReturnValue(true);
+		test('should handle nested CSS Custom Function calls', () => {
+			const cssText = `
+				@function --double(--value) {
+					result: calc(var(--value) * 2);
+				}
+				@function --triple(--value) {
+					result: --double(calc(var(--value) * 1.5));
+				}
+				.test { width: --triple(10px); }
+			`;
 
-			const cssText =
-				'.test { display: if(supports(display: grid): grid; else: block); }';
 			const result = processCSSText(cssText);
-
-			expect(result).toBe('.test { display: grid; }');
-		});
-
-		test('should process multiple if() functions', () => {
-			const cssText =
-				'.test { color: if(style(--true): red; else: blue); background: if(style(--false): white; else: black); }';
-			const result = processCSSText(cssText);
-
-			expect(result).toBe('.test { color: blue; background: black; }');
-		});
-
-		test('should handle false condition with no else clause', () => {
-			const cssText = '.test { color: if(false: red); }';
-			const result = processCSSText(cssText);
-
-			expect(result).toBe('.test { color: ; }');
+			expect(result).toContain('width: calc(calc(10px * 1.5) * 2)');
 		});
 	});
 
@@ -165,35 +184,50 @@ describe('CSS Custom Functions polyfill', () => {
 		});
 
 		test('should export processCSSText function', () => {
-			const result = processCSSText(
-				'.test { color: if(style(--true): red; else: blue); }'
-			);
-			expect(result).toBe('.test { color: blue; }');
+			const result = processCSSText(`
+				@function --test() {
+					result: red;
+				}
+				.test { color: --test(); }
+			`);
+			expect(result).toContain('color: red');
 		});
 
 		test('should handle processCSSText with options', () => {
 			const result = processCSSText(
-				'.test { color: if(style(--true): red; else: blue); }',
+				`
+				@function --test() {
+					result: blue;
+				}
+				.test { color: --test(); }
+			`,
+				{},
 				{ debug: true }
 			);
-			expect(result).toBe('.test { color: blue; }');
+			expect(result).toContain('color: blue');
 		});
 	});
 
 	describe('Error Handling', () => {
-		test('should handle invalid conditions gracefully', () => {
-			const cssText =
-				'.test { color: if(invalid-condition: red; else: blue); }';
-			const result = processCSSText(cssText);
+		test('should handle invalid function calls gracefully', () => {
+			const cssText = `
+				.test { color: --nonexistent-function(red); }
+			`;
 
-			expect(result).toBe('.test { color: blue; }');
+			const result = processCSSText(cssText);
+			expect(result).toContain('color: --nonexistent-function(red)');
 		});
 
-		test('should handle malformed if() functions', () => {
-			const cssText = '.test { color: if(true, red); }'; // Old syntax should remain unchanged
-			const result = processCSSText(cssText);
+		test('should handle malformed function definitions', () => {
+			const cssText = `
+				@function invalid syntax {
+					result: red;
+				}
+				.test { color: blue; }
+			`;
 
-			expect(result).toBe('.test { color: if(true, red); }'); // Should remain unchanged
+			const result = processCSSText(cssText);
+			expect(result).toContain('color: blue');
 		});
 
 		test('should handle CSS.supports errors', () => {
@@ -201,10 +235,37 @@ describe('CSS Custom Functions polyfill', () => {
 				throw new Error('CSS.supports error');
 			});
 
-			const result = processCSSText(
-				'.test { color: if(supports(invalid-property): red; else: blue); }'
-			);
-			expect(result).toBe('.test { color: blue; }');
+			const cssText = `
+				@function --test() {
+					@supports (display: grid) {
+						result: grid;
+					}
+					result: block;
+				}
+				.test { display: --test(); }
+			`;
+
+			const result = processCSSText(cssText);
+			expect(result).toContain('display: block');
+		});
+
+		test('should handle matchMedia errors', () => {
+			globalThis.matchMedia.mockImplementation(() => {
+				throw new Error('matchMedia error');
+			});
+
+			const cssText = `
+				@function --test() {
+					@media (min-width: 768px) {
+						result: large;
+					}
+					result: small;
+				}
+				.test { font-size: --test(); }
+			`;
+
+			const result = processCSSText(cssText);
+			expect(result).toContain('font-size: small');
 		});
 	});
 });
