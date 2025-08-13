@@ -68,26 +68,70 @@
 
 			/* Enhanced CSS Custom Function examples with shorthand property usage */
 
+			/* CSS Custom Functions for border properties */
+			@function --border-width() {
+				result: 1px;
+
+				@media (width >=768px) {
+					result: 2px;
+				}
+
+				@media (width >=1200px) {
+					result: 4px;
+				}
+			}
+
+			@function --border-style() {
+				result: solid;
+
+				@supports (border-style: dashed) {
+					result: dashed;
+				}
+			}
+
+			@function --border-color() {
+				result: #333;
+
+				@media (prefers-color-scheme: dark) {
+					result: #fff;
+				}
+			}
+
 			/* 1. Border shorthand with multiple conditions */
 			.multi-border {
-				border: if(
-						media(width >=1200px): 4px; media(width >=768px): 2px;
-							else: 1px
-					)
-					if(supports(border-style: dashed): dashed; else: solid)
-					if(media(prefers-color-scheme: dark): #fff; else: #333);
+				border-width: --border-width();
+				border-style: --border-style();
+				border-color: --border-color();
 				padding: 20px;
 				background: #f0f8ff;
 				border-radius: 8px;
 			}
 
+			/* CSS Custom Functions for margin properties */
+			@function --margin-block() {
+				result: 10px;
+
+				@media (width >=768px) {
+					result: 20px;
+				}
+
+				@media (width >=1024px) {
+					result: 40px;
+				}
+			}
+
+			@function --margin-inline() {
+				result: 0;
+
+				@supports (margin-inline: 20px) {
+					result: auto;
+				}
+			}
+
 			/* 2. Margin shorthand with responsive values */
 			.responsive-margin {
-				margin: if(
-						media(width >=1024px): 40px; media(width >=768px): 20px;
-							else: 10px
-					)
-					if(supports(margin-inline: 20px): auto; else: 0);
+				margin-block: --margin-block();
+				margin-inline: --margin-inline();
 				padding: 25px;
 				background: linear-gradient(45deg, #ff6b6b, #ee5a24);
 				color: white;
@@ -95,50 +139,104 @@
 				text-align: center;
 			}
 
+			/* CSS Custom Functions for font properties */
+			@function --font-weight() {
+				result: bold;
+
+				@supports (font-variation-settings: "wght" 400) {
+					result: 600;
+				}
+			}
+
+			@function --font-size() {
+				result: 18px;
+
+				@media (width >=768px) {
+					result: 24px;
+				}
+			}
+
+			@function --line-height() {
+				result: 1.4;
+
+				@media (width >=768px) {
+					result: 1.6;
+				}
+			}
+
+			@function --font-family() {
+				result: Arial, sans-serif;
+
+				@supports (font-family: system-ui) {
+					result: system-ui, sans-serif;
+				}
+			}
+
 			/* 3. Font shorthand with conditional values */
 			.dynamic-font {
-				font:
-					if(
-							supports(font-variation-settings: "wght" 400): 600;
-								else: bold
-						)
-						if(media(width >=768px): 24px; else: 18px)
-						if(media(width >=768px): 1.6; else: 1.4)
-						if(
-							supports(font-family: system-ui): system-ui;
-								else: Arial
-						),
-					sans-serif;
+				font-weight: --font-weight();
+				font-size: --font-size();
+				line-height: --line-height();
+				font-family: --font-family();
 				padding: 20px;
 				background: #e3f2fd;
 				border-radius: 8px;
 			}
 
+			/* CSS Custom Functions for background properties */
+			@function --background-color() {
+				result: #ffffff;
+
+				@media (prefers-color-scheme: dark) {
+					result: #2d3748;
+				}
+			}
+
+			@function --background-image() {
+				result: none;
+
+				@supports (
+					background-image: linear-gradient(45deg, red, blue)
+				) {
+					result: linear-gradient(
+						45deg,
+						transparent,
+						rgba(0, 122, 204, 0.1)
+					);
+				}
+			}
+
+			@function --background-repeat() {
+				result: repeat;
+
+				@media (width >=768px) {
+					result: no-repeat;
+				}
+			}
+
+			@function --background-position() {
+				result: top left;
+
+				@media (width >=768px) {
+					result: center;
+				}
+			}
+
+			@function --text-color() {
+				result: #2d3748;
+
+				@media (prefers-color-scheme: dark) {
+					result: #e2e8f0;
+				}
+			}
+
 			/* 4. Background shorthand with conditional values */
 			.conditional-background {
-				background: if(
-						media(prefers-color-scheme: dark): #2d3748;
-							else: #ffffff
-					)
-					if(
-						supports(
-								background-image: linear-gradient(
-										45deg,
-										red,
-										blue
-									)
-							): linear-gradient(
-								45deg,
-								transparent,
-								rgba(0, 122, 204, 0.1)
-							)
-							; else: none
-					)
-					if(media(width >=768px): no-repeat; else: repeat)
-					if(media(width >=768px): center; else: top left);
-				color: if(
-					media(prefers-color-scheme: dark): #e2e8f0; else: #2d3748
-				);
+				background-color: --background-color();
+				background-image: --background-image();
+				background-repeat: --background-repeat();
+				background-position: --background-position();
+				color: --text-color();
 				padding: 30px;
 				border-radius: 12px;
 				min-height: 100px;

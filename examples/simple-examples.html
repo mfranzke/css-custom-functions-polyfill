@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>CSS Custom Functions polyfill - Simple Examples</title>
+		<style>
+			body {
+				font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+				margin: 0;
+				padding: 20px;
+				background-color: #f5f5f5;
+			}
+
+			.container {
+				max-width: 1200px;
+				margin: 0 auto;
+				background: white;
+				padding: 30px;
+				border-radius: 10px;
+				box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+			}
+
+			h1 {
+				color: #333;
+				text-align: center;
+				margin-bottom: 30px;
+			}
+
+			.example {
+				margin-bottom: 40px;
+				padding: 20px;
+				border: 1px solid #ddd;
+				border-radius: 8px;
+				background-color: #fafafa;
+			}
+
+			.example h3 {
+				color: #555;
+				margin-top: 0;
+			}
+
+			.example-code {
+				background-color: #f8f8f8;
+				padding: 15px;
+				border-radius: 5px;
+				font-family: "Courier New", monospace;
+				margin: 10px 0;
+				overflow-x: auto;
+			}
+
+			.example-result {
+				padding: 15px;
+				border: 2px solid #007acc;
+				border-radius: 5px;
+				background-color: white;
+			}
+
+			/* CSS Custom Functions examples based on our test fixtures */
+
+			/* Basic function example */
+			@function --negative(--value) {
+				result: calc(-1 * var(--value));
+			}
+
+			.negative-margin {
+				margin: --negative(10px);
+				padding: 10px;
+				background-color: #e3f2fd;
+				border-radius: 5px;
+			}
+
+			/* Conditional media query example */
+			@function --suitable-font-size() {
+				result: 16px;
+
+				@media (width > 1000px) {
+					result: 20px;
+				}
+			}
+
+			.responsive-text {
+				font-size: --suitable-font-size();
+				color: #333;
+			}
+
+			/* Return type specification example */
+			@function --double-z() returns <number> {
+				result: calc(var(--z) * 2);
+			}
+
+			.z-index-demo {
+				--z: 3;
+				position: relative;
+				z-index: --double-z();
+				background-color: #4caf50;
+				color: white;
+				padding: 15px;
+				border-radius: 5px;
+			}
+
+			/* Supports conditional example */
+			@function --modern-display() {
+				result: block;
+
+				@supports (display: grid) {
+					result: grid;
+				}
+			}
+
+			.layout-demo {
+				display: --modern-display();
+				gap: 20px;
+				grid-template-columns: repeat(3, 1fr);
+				padding: 15px;
+			}
+
+			.layout-demo > div {
+				background-color: #ff9800;
+				color: white;
+				padding: 20px;
+				border-radius: 5px;
+				text-align: center;
+			}
+
+			/* Status indicators */
+			.status-indicator {
+				padding: 10px;
+				border-radius: 5px;
+				margin: 10px 0;
+				font-weight: bold;
+			}
+
+			.native-support {
+				background-color: #4caf50;
+				color: white;
+			}
+
+			.polyfill-active {
+				background-color: #ff9800;
+				color: white;
+			}
+
+			.controls {
+				margin: 20px 0;
+				text-align: center;
+			}
+
+			button {
+				padding: 10px 20px;
+				margin: 0 10px;
+				border: none;
+				border-radius: 5px;
+				background-color: #007acc;
+				color: white;
+				cursor: pointer;
+				font-size: 16px;
+			}
+
+			button:hover {
+				background-color: #005a9e;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="container">
+			<h1>CSS Custom Functions polyfill Examples</h1>
+
+			<div id="status" class="status-indicator"></div>
+
+			<div class="controls">
+				<button type="button" onclick="location.reload()">
+					Refresh Page
+				</button>
+			</div>
+
+			<div class="example">
+				<h3>1. Basic Custom Function</h3>
+				<div class="example-code">
+					@function --negative(--value) {<br />
+					&nbsp;&nbsp;result: calc(-1 * var(--value));<br />
+					}<br />
+					<br />
+					.negative-margin {<br />
+					&nbsp;&nbsp;margin: --negative(10px);<br />
+					}
+				</div>
+				<div class="example-result negative-margin">
+					This element has a negative margin using a custom function!
+				</div>
+			</div>
+
+			<div class="example">
+				<h3>2. Responsive Typography</h3>
+				<div class="example-code">
+					@function --suitable-font-size() {<br />
+					&nbsp;&nbsp;result: 16px;<br />
+					&nbsp;&nbsp;@media (width &gt; 1000px) {<br />
+					&nbsp;&nbsp;&nbsp;&nbsp;result: 20px;<br />
+					&nbsp;&nbsp;}<br />
+					}<br />
+					<br />
+					.responsive-text {<br />
+					&nbsp;&nbsp;font-size: --suitable-font-size();<br />
+					}
+				</div>
+				<div class="example-result responsive-text">
+					This text changes size based on screen width (resize your
+					browser to see the effect)!
+				</div>
+			</div>
+
+			<div class="example">
+				<h3>3. Return Type Specification</h3>
+				<div class="example-code">
+					@function --double-z() returns &lt;number&gt; {<br />
+					&nbsp;&nbsp;result: calc(var(--z) * 2);<br />
+					}<br />
+					<br />
+					.z-index-demo {<br />
+					&nbsp;&nbsp;--z: 3;<br />
+					&nbsp;&nbsp;z-index: --double-z();<br />
+					}
+				</div>
+				<div class="example-result z-index-demo">
+					This element has a calculated z-index value (6 = 3 * 2)!
+				</div>
+			</div>
+
+			<div class="example">
+				<h3>4. Feature Detection with @supports</h3>
+				<div class="example-code">
+					@function --modern-display() {<br />
+					&nbsp;&nbsp;result: block;<br />
+					&nbsp;&nbsp;@supports (display: grid) {<br />
+					&nbsp;&nbsp;&nbsp;&nbsp;result: grid;<br />
+					&nbsp;&nbsp;}<br />
+					}<br />
+					<br />
+					.layout-demo {<br />
+					&nbsp;&nbsp;display: --modern-display();<br />
+					}
+				</div>
+				<div class="example-result">
+					<div class="layout-demo">
+						<div>Item 1</div>
+						<div>Item 2</div>
+						<div>Item 3</div>
+					</div>
+					<p>
+						This layout uses CSS Grid if supported, otherwise falls
+						back to block display.
+					</p>
+				</div>
+			</div>
+
+			<div
+				style="
+					margin-top: 40px;
+					padding: 20px;
+					background-color: #e8f5e8;
+					border-radius: 5px;
+				"
+			>
+				<h3>🚀 CSS Custom Functions Features Demonstrated:</h3>
+				<ul>
+					<li>✅ Basic function definitions with parameters</li>
+					<li>✅ Conditional logic with @media queries</li>
+					<li>✅ Return type specifications</li>
+					<li>✅ Feature detection with @supports</li>
+					<li>✅ Runtime polyfill processing</li>
+				</ul>
+			</div>
+		</div>
+
+		<script src="../packages/css-custom-functions-polyfill/dist/css-custom-functions-polyfill.min.js"></script>
+		<script>
+			// Initialize the polyfill and show status
+			document.addEventListener("DOMContentLoaded", function () {
+				const statusEl = document.getElementById("status");
+
+				if (typeof CSSCustomFunctionsPolyfill !== "undefined") {
+					statusEl.textContent =
+						"CSS Custom Functions polyfill loaded and active";
+					statusEl.className = "status-indicator polyfill-active";
+				} else {
+					statusEl.textContent =
+						"CSS Custom Functions polyfill not available";
+					statusEl.className = "status-indicator";
+				}
+			});
+		</script>
+	</body>
+</html>

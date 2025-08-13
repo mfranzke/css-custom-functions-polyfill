@@ -45,17 +45,74 @@
 				margin-top: 0;
 			}
 
-			/* Advanced CSS Custom Function examples with correct single-function syntax */
+			/* Advanced CSS Custom Functions examples */
 
 			/* 1. Complex responsive grid */
+			@function --grid-display() {
+				result: flex;
+
+				@supports (display: grid) {
+					result: grid;
+				}
+			}
+
+			@function --grid-gap() {
+				result: 0;
+
+				@supports (gap) {
+					result: 30px;
+				}
+			}
+
+			@function --grid-columns() {
+				result: 1fr;
+
+				@media (width >=768px) {
+					result: repeat(2, 1fr);
+				}
+
+				@media (width >=1200px) {
+					result: repeat(4, 1fr);
+				}
+			}
+
+			@function --grid-flex-wrap() {
+				result: wrap;
+
+				@supports (display: grid) {
+					result: initial;
+				}
+			}
+
 			.responsive-grid {
-				display: if(supports(display: grid): grid; else: flex);
-				gap: if(supports(gap): 30px; else: 0);
-				grid-template-columns: if(
-					media(width >=1200px): repeat(4, 1fr) ;
-						media(width >=768px): repeat(2, 1fr) ; else: 1fr
-				);
-				flex-wrap: if(supports(display: grid): initial; else: wrap);
+				display: --grid-display();
+				gap: --grid-gap();
+				grid-template-columns: --grid-columns();
+				flex-wrap: --grid-flex-wrap();
+			}
+
+			@function --grid-item-margin() {
+				result: 15px;
+
+				@supports (gap) {
+					result: 0;
+				}
+			}
+
+			@function --grid-item-flex() {
+				result: 1;
+
+				@supports (display: grid) {
+					result: none;
+				}
+			}
+
+			@function --grid-item-min-width() {
+				result: 200px;
+
+				@supports (display: grid) {
+					result: none;
+				}
 			}
 
 			.grid-item {
@@ -65,9 +122,9 @@
 				border-radius: 15px;
 				text-align: center;
 				font-weight: bold;
-				margin: if(supports(gap): 0; else: 15px);
-				flex: if(supports(display: grid): none; else: 1);
-				min-width: if(supports(display: grid): none; else: 200px);
+				margin: --grid-item-margin();
+				flex: --grid-item-flex();
+				min-width: --grid-item-min-width();
 			}
 
 			/* 2. Progressive enhancement for animations */
