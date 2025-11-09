@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>CSS Custom Functions - Multiple Conditions Examples</title>
+		<style>
+			:root {
+				--scheme: ice;
+				--theme: dark;
+				--size: large;
+			}
+
+			body {
+				font-family:
+					system-ui,
+					-apple-system,
+					sans-serif;
+				margin: 0;
+				padding: 20px;
+				background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+				min-height: 100vh;
+			}
+
+			.container {
+				max-width: 1200px;
+				margin: 0 auto;
+				background: rgba(255, 255, 255, 0.95);
+				padding: 40px;
+				border-radius: 20px;
+				box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+			}
+
+			h1 {
+				text-align: center;
+				color: #333;
+				margin-bottom: 40px;
+				font-size: 2.5em;
+			}
+
+			.demo-section {
+				margin-bottom: 50px;
+				padding: 30px;
+				background: #f8f9fa;
+				border-radius: 15px;
+				border-left: 5px solid #007acc;
+			}
+
+			.demo-section h2 {
+				color: #007acc;
+				margin-top: 0;
+			}
+
+			.code-block {
+				background: #f4f4f4;
+				padding: 20px;
+				border-radius: 8px;
+				font-family: "Courier New", monospace;
+				font-size: 14px;
+				margin: 15px 0;
+				overflow-x: auto;
+				border-left: 4px solid #007acc;
+			}
+
+			/* Multiple condition examples with CSS Custom Functions */
+
+			/* Multi-media query responsive background */
+			@function --multi-responsive-bg() {
+				result: lightcoral;
+
+				@media (min-width: 480px) {
+					result: lightblue;
+				}
+
+				@media (min-width: 768px) {
+					result: lightgreen;
+				}
+
+				@media (min-width: 1024px) {
+					result: lightyellow;
+				}
+			}
+
+			/* Multi-supports feature detection */
+			@function --multi-feature-font() {
+				result: Arial, sans-serif;
+
+				@supports (font-feature-settings: normal) {
+					result: "SF Pro Display", system-ui, sans-serif;
+				}
+
+				@supports (font-variation-settings: "wght" 400) {
+					result: "Inter Variable", system-ui, sans-serif;
+				}
+			}
+
+			/* Multi-preference media queries */
+			@function --accessibility-aware-size() {
+				result: 16px;
+
+				@media (prefers-reduced-motion: reduce) {
+					result: 18px;
+				}
+
+				@media (prefers-contrast: high) {
+					result: 20px;
+				}
+
+				@media (prefers-reduced-motion: reduce) and (prefers-contrast: high) {
+					result: 22px;
+				}
+			}
+
+			/* Multi-breakpoint layout */
+			@function --responsive-columns() {
+				result: 1fr;
+
+				@media (min-width: 480px) {
+					result: repeat(2, 1fr);
+				}
+
+				@media (min-width: 768px) {
+					result: repeat(3, 1fr);
+				}
+
+				@media (min-width: 1024px) {
+					result: repeat(4, 1fr);
+				}
+			}
+
+			/* Multi-condition border */
+			@function --adaptive-border-width() {
+				result: 1px;
+
+				@media (min-width: 768px) {
+					result: 2px;
+				}
+
+				@supports (border-width: max(1px, 0.1vw)) {
+					result: max(1px, 0.2vw);
+				}
+			}
+
+			@function --adaptive-border-style() {
+				result: solid;
+
+				@supports (border-style: dashed) {
+					result: dashed;
+				}
+
+				@media (prefers-contrast: high) {
+					result: solid;
+				}
+			}
+
+			/* Multi-condition spacing */
+			@function --context-aware-spacing() {
+				result: 10px;
+
+				@media (min-width: 768px) {
+					result: 20px;
+				}
+
+				@media (prefers-reduced-motion: reduce) {
+					result: 15px;
+				}
+
+				@supports (margin-block: 10px) {
+					result: clamp(10px, 2vw, 30px);
+				}
+			}
+
+			/* Apply the multi-condition functions */
+			.multi-responsive {
+				background: --multi-responsive-bg();
+				padding: 20px;
+				margin: 20px 0;
+				border-radius: 8px;
+				text-align: center;
+				font-weight: bold;
+			}
+
+			.multi-feature {
+				font-family: --multi-feature-font();
+				font-size: --accessibility-aware-size();
+				padding: 20px;
+				background: #e3f2fd;
+				border-radius: 8px;
+				margin: 20px 0;
+			}
+
+			.multi-layout {
+				display: grid;
+				grid-template-columns: --responsive-columns();
+				gap: 20px;
+				margin: 20px 0;
+			}
+
+			.multi-layout .item {
+				background: #4caf50;
+				color: white;
+				padding: 20px;
+				border-radius: 8px;
+				text-align: center;
+			}
+
+			.multi-border {
+				border-width: --adaptive-border-width();
+				border-style: --adaptive-border-style();
+				border-color: #007acc;
+				padding: --context-aware-spacing();
+				background: #f0f8ff;
+				border-radius: 8px;
+				margin: 20px 0;
+			}
+
+			.status-indicator {
+				padding: 15px;
+				border-radius: 8px;
+				margin: 20px 0;
+				font-weight: bold;
+				text-align: center;
+			}
+
+			.polyfill-active {
+				background-color: #ff9800;
+				color: white;
+			}
+
+			.footer-note {
+				margin-top: 40px;
+				padding: 20px;
+				background-color: #e8f5e8;
+				border-radius: 10px;
+				text-align: center;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="container">
+			<h1>Multiple Conditions with CSS Custom Functions</h1>
+
+			<div id="status" class="status-indicator"></div>
+
+			<div class="demo-section">
+				<h2>1. Multi-Breakpoint Responsive Background</h2>
+				<div class="code-block">
+					@function --multi-responsive-bg() {<br />
+					&nbsp;&nbsp;result: lightcoral;<br />
+					&nbsp;&nbsp;@media (min-width: 480px) { result: lightblue;
+					}<br />
+					&nbsp;&nbsp;@media (min-width: 768px) { result: lightgreen;
+					}<br />
+					&nbsp;&nbsp;@media (min-width: 1024px) { result:
+					lightyellow; }<br />
+					}
+				</div>
+				<div class="multi-responsive">
+					This background changes color at multiple breakpoints:
+					480px, 768px, and 1024px!
+				</div>
+			</div>
+
+			<div class="demo-section">
+				<h2>2. Multi-Feature Detection Typography</h2>
+				<div class="code-block">
+					@function --multi-feature-font() {<br />
+					&nbsp;&nbsp;result: Arial, sans-serif;<br />
+					&nbsp;&nbsp;@supports (font-feature-settings: normal) {<br />
+					&nbsp;&nbsp;&nbsp;&nbsp;result: "SF Pro Display", system-ui,
+					sans-serif;<br />
+					&nbsp;&nbsp;}<br />
+					&nbsp;&nbsp;@supports (font-variation-settings: "wght" 400)
+					{<br />
+					&nbsp;&nbsp;&nbsp;&nbsp;result: "Inter Variable", system-ui,
+					sans-serif;<br />
+					&nbsp;&nbsp;}<br />
+					}
+				</div>
+				<div class="multi-feature">
+					This text uses progressively enhanced fonts based on browser
+					capabilities!
+				</div>
+			</div>
+
+			<div class="demo-section">
+				<h2>3. Accessibility-Aware Sizing</h2>
+				<div class="code-block">
+					@function --accessibility-aware-size() {<br />
+					&nbsp;&nbsp;result: 16px;<br />
+					&nbsp;&nbsp;@media (prefers-reduced-motion: reduce) {
+					result: 18px; }<br />
+					&nbsp;&nbsp;@media (prefers-contrast: high) { result: 20px;
+					}<br />
+					}
+				</div>
+				<div class="multi-feature">
+					This text size adapts to accessibility preferences!
+				</div>
+			</div>
+
+			<div class="demo-section">
+				<h2>4. Multi-Breakpoint Grid Layout</h2>
+				<div class="code-block">
+					@function --responsive-columns() {<br />
+					&nbsp;&nbsp;result: 1fr;<br />
+					&nbsp;&nbsp;@media (min-width: 480px) { result: repeat(2,
+					1fr); }<br />
+					&nbsp;&nbsp;@media (min-width: 768px) { result: repeat(3,
+					1fr); }<br />
+					&nbsp;&nbsp;@media (min-width: 1024px) { result: repeat(4,
+					1fr); }<br />
+					}
+				</div>
+				<div class="multi-layout">
+					<div class="item">Item 1</div>
+					<div class="item">Item 2</div>
+					<div class="item">Item 3</div>
+					<div class="item">Item 4</div>
+				</div>
+			</div>
+
+			<div class="demo-section">
+				<h2>5. Multi-Condition Border & Spacing</h2>
+				<div class="code-block">
+					@function --adaptive-border-width() {<br />
+					&nbsp;&nbsp;result: 1px;<br />
+					&nbsp;&nbsp;@media (min-width: 768px) { result: 2px; }<br />
+					&nbsp;&nbsp;@supports (border-width: max(1px, 0.1vw)) {<br />
+					&nbsp;&nbsp;&nbsp;&nbsp;result: max(1px, 0.2vw);<br />
+					&nbsp;&nbsp;}<br />
+					}
+				</div>
+				<div class="multi-border">
+					This element has adaptive borders and spacing based on
+					screen size and browser features!
+				</div>
+			</div>
+
+			<div class="footer-note">
+				<h3>🚀 Multiple Conditions Features Demonstrated:</h3>
+				<ul style="text-align: left; display: inline-block">
+					<li>✅ Multi-breakpoint responsive design</li>
+					<li>✅ Progressive font enhancement</li>
+					<li>✅ Accessibility preference detection</li>
+					<li>✅ Multi-breakpoint grid layouts</li>
+					<li>✅ Adaptive borders and spacing</li>
+					<li>✅ Complex media query combinations</li>
+				</ul>
+			</div>
+		</div>
+
+		<script src="../packages/css-custom-functions-polyfill/dist/css-custom-functions-polyfill.min.js"></script>
+		<script>
+			document.addEventListener("DOMContentLoaded", function () {
+				const statusEl = document.getElementById("status");
+
+				if (typeof CSSCustomFunctionsPolyfill !== "undefined") {
+					statusEl.textContent =
+						"Multiple Conditions CSS Custom Functions polyfill loaded and active";
+					statusEl.className = "status-indicator polyfill-active";
+				} else {
+					statusEl.textContent =
+						"CSS Custom Functions polyfill not available";
+					statusEl.className = "status-indicator";
+				}
+			});
+		</script>
+	</body>
+</html>

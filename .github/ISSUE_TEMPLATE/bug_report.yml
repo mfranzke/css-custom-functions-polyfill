@@ -53,8 +53,15 @@ body:
       description: Please provide the CSS code that demonstrates the issue
       placeholder: |
         ```css
+        @function --color-theme(--mode) {
+          @media (prefers-color-scheme: dark) {
+            result: var(--mode, #ffffff);
+          }
+          result: var(--mode, #000000);
+        }
+
         .example {
-          color: if(media(min-width: 768px): blue; else: red);
+          color: --color-theme(blue);
         }
         ```
     validations:

@@ -5,27 +5,48 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>CSS Custom Functions polyfill - Media Query Tracking Demo</title>
 		<style>
+			/* CSS Custom Functions for responsive design */
+			@function --responsive-bg-color() {
+				result: lightcoral;
+
+				@media (min-width: 768px) {
+					result: lightblue;
+				}
+			}
+
+			@function --responsive-border-color() {
+				result: darkred;
+
+				@media (min-width: 768px) {
+					result: darkblue;
+				}
+			}
+
+			@function --responsive-text-color() {
+				result: darkred;
+
+				@media (min-width: 768px) {
+					result: darkblue;
+				}
+			}
+
+			@function --responsive-font-size() {
+				result: 14px;
+
+				@media (min-width: 768px) {
+					result: 18px;
+				}
+			}
+
 			/* This CSS will automatically adapt when the window is resized */
 			.responsive-box {
 				padding: 20px;
 				margin: 20px;
 				border: 2px solid;
-
-				/* Responsive background color */
-				background-color: if(
-					media(min-width: 768px): lightblue; else: lightcoral
-				);
-
-				/* Responsive border color */
-				border-color: if(
-					media(min-width: 768px): darkblue; else: darkred
-				);
-
-				/* Responsive text color */
-				color: if(media(min-width: 768px): darkblue; else: darkred);
-
-				/* Responsive font size */
-				font-size: if(media(min-width: 768px): 18px; else: 14px);
+				background-color: --responsive-bg-color();
+				border-color: --responsive-border-color();
+				color: --responsive-text-color();
+				font-size: --responsive-font-size();
 			}
 
 			.demo-container {

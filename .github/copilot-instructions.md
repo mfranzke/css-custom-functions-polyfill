@@ -5,7 +5,7 @@
 This is a JavaScript polyfill and PostCSS plugin for [CSS Custom Function functionality](https://developer.mozilla.org/en-US/docs/Web/CSS/if). The polyfill provides browser support for the CSS Custom Function function with style(), media(), and supports() conditions as specified in the WCAG (Web Content Accessibility Guidelines).
 
 <!-- TODO: Update this section if the official specification changes.
-https://drafts.csswg.org/css-values-5/#if-notation -->
+https://www.w3.org/TR/css-mixins-1/ -->
 
 ## Official WCAG CSS Custom Function Function Specification
 
@@ -469,7 +469,7 @@ When working with CSS Custom Function functions, always follow the official WCAG
 - Follow XO linting rules (extends ESLint strict configuration)
 - Use `/* eslint-disable rule-name */` blocks only when necessary for browser automation
 - Prefer functional programming patterns
-- Use meaningful variable names and comprehensive JSDoc comments
+- Use meaningful variable names and comprehensive JSDoc comments, instead of TypeScript within our source code, but still provide type definitions for public APIs
 
 ### Testing Requirements
 
@@ -529,7 +529,3 @@ When working with CSS Custom Function functions, always follow the official WCAG
 6. **Consider** performance impact on large stylesheets and DOM trees
 
 This project aims to provide a complete, specification-compliant implementation of CSS Custom Function functionality for browsers that don't yet support it natively.
-
-```
-
-```
