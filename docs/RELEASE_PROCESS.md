@@ -116,12 +116,6 @@ The changeset configuration is in `.changeset/config.json`:
 }
 ```
 
-## Required Secrets
-
-Make sure these secrets are configured in your GitHub repository:
-
-- `NPM_TOKEN`: Your npm authentication token for publishing
-
 ## Benefits over manual tagging
 
 1. **Automatic changelog generation** from changeset summaries
