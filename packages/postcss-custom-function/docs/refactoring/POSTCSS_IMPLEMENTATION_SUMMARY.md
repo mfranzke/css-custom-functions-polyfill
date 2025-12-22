@@ -16,7 +16,7 @@
     - Integrates with PostCSS ecosystem
     - Uses the css-custom-functions-polyfill transformation engine
     - Supports plugin options (logTransformations, preserveOriginal, skipSelectors)
-    - Transforms CSS Custom Function functions to native @media/@supports rules
+    - Transforms CSS Custom Functionss to native @media/@supports rules
     - Complete error handling and validation
 
 ### 3. **Plugin Configuration**
@@ -62,7 +62,7 @@ const result = await postcss([
 
 ```css
 .example {
-	color: if(media(max-width: 768px): blue; else: red);
+	color: if(@media (max-width: 768px) { result: blue; }; else: red);
 	font-size: if(supports(display: grid): 1.2rem; else: 1rem);
 }
 ```
@@ -90,8 +90,8 @@ const result = await postcss([
 
 ### **Advanced Features**
 
-- **Multiple Conditions**: Supports multiple conditions within a single if() function
-- **Separate if() Functions**: Handles multiple if() functions per CSS rule
+- **Multiple Conditions**: Supports multiple conditions within a single CSS Custom Function
+- **Separate if() Functions**: Handles multiple CSS Custom Functions per CSS rule
 - **Error Handling**: Graceful handling of malformed CSS
 - **Statistics Logging**: Optional transformation statistics output
 - **Preservation Options**: Can preserve original CSS alongside transformations
@@ -136,7 +136,7 @@ Perfect for media() and supports() conditions that can be statically analyzed:
 ```css
 /* Build-time transformation */
 .responsive {
-	width: if(media(max-width: 768px): 100%; else: 50%);
+	width: if(@media (max-width: 768px) { result: 100%; }; else: 50%);
 	display: if(supports(display: grid): grid; else: flex);
 }
 ```
@@ -148,8 +148,10 @@ For style() conditions that depend on runtime state:
 ```css
 /* Runtime processing */
 .dynamic {
-	color: if(style(--theme: dark): white; else: black);
-	font-size: if(style(--large): 1.5rem; else: 1rem);
+	color: --custom-function(--theme: dark)
+		/* Define: @function --custom-function(--param) { result: var(--param, black); } */;
+	font-size: --custom-function(--large)
+		/* Define: @function --custom-function(--param) { result: var(--param, 1rem); } */;
 }
 ```
 
@@ -160,10 +162,11 @@ Use PostCSS for static conditions + runtime polyfill for dynamic ones:
 ```css
 .optimized {
 	/* Static - handled by PostCSS */
-	padding: if(media(max-width: 768px): 1rem; else: 2rem);
+	padding: if(@media (max-width: 768px) { result: 1rem; }; else: 2rem);
 
 	/* Dynamic - handled by runtime polyfill */
-	background: if(style(--dark-mode): #333; else: #fff);
+	background: --custom-function(--dark-mode)
+		/* Define: @function --custom-function(--param) { result: var(--param, #fff); } */;
 }
 ```
 
@@ -219,11 +222,11 @@ npm run test --workspace=css-custom-functions-polyfill
 
 We have successfully:
 
-1. **✅ Created a PostCSS plugin** that transforms CSS Custom Function functions to native CSS
+1. **✅ Created a PostCSS plugin** that transforms CSS Custom Functionss to native CSS
 2. **✅ Implemented workspace structure** for better package organization
 3. **✅ Maintained backward compatibility** with the existing polyfill
 4. **✅ Added comprehensive documentation** and examples
 5. **✅ Provided flexible integration options** for different build tools
 6. **✅ Optimized performance** with build-time transformation capabilities
 
-The PostCSS plugin (`postcss-custom-function`) now provides a complete build-time solution for transforming CSS Custom Function functions, while the core polyfill (`css-custom-functions-polyfill`) continues to provide runtime processing for dynamic conditions. This hybrid approach offers the best of both worlds: optimal performance for static conditions and full functionality for dynamic styling needs.
+The PostCSS plugin (`postcss-custom-function`) now provides a complete build-time solution for transforming CSS Custom Functionss, while the core polyfill (`css-custom-functions-polyfill`) continues to provide runtime processing for dynamic conditions. This hybrid approach offers the best of both worlds: optimal performance for static conditions and full functionality for dynamic styling needs.

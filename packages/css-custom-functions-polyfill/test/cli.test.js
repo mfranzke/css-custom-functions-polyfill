@@ -13,9 +13,9 @@ describe('CLI Tool', () => {
 		// Create test input file
 		const testCSS = `
 .test {
-  color: if(media(min-width: 768px): blue; else: red);
+  color: if(@media (min-width: 768px) { result: blue; }; else: red);
   background: if(supports(display: grid): transparent; else: white);
-  font-size: if(style(--large): 24px; else: 16px);
+  font-size: --custom-function(--large) /* Define: @function --custom-function(--param) { result: var(--param, 16px); } */;
 }
 `;
 		await writeFile(testInputFile, testCSS);

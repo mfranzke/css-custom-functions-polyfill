@@ -2,7 +2,7 @@
 
 /**
  * CSS Custom Function Build-time Transformation CLI
- * Transforms CSS Custom Function functions to native @media/@supports rules
+ * Transforms CSS Custom Functionss to native @media/@supports rules
  */
 
 import { readFile, writeFile } from 'node:fs/promises';
@@ -79,11 +79,11 @@ const main = async () => {
 
 			if (result.hasRuntimeRules) {
 				console.log(
-					'  ⚠️  Some if() functions require runtime processing'
+					'  ⚠️  Some CSS Custom Functions require runtime processing'
 				);
 			} else {
 				console.log(
-					'  ✅ All if() functions transformed to native CSS'
+					'  ✅ All CSS Custom Functions transformed to native CSS'
 				);
 			}
 		}
@@ -115,7 +115,7 @@ const main = async () => {
 		// Show warnings if needed
 		if (result.hasRuntimeRules) {
 			console.log(
-				'\n⚠️  Warning: Some if() functions still require runtime processing.'
+				'\n⚠️  Warning: Some CSS Custom Functions still require runtime processing.'
 			);
 			console.log(
 				'   Make sure to include the CSS Custom Functions polyfill in your webpage.'

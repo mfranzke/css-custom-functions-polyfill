@@ -1,13 +1,13 @@
 /**
- * PostCSS plugin for transforming CSS Custom Function functions to native CSS
+ * PostCSS plugin for transforming CSS Custom Functionss to native CSS
  *
- * This plugin transforms CSS Custom Function functions into native @media and @supports rules
+ * This plugin transforms CSS Custom Functionss into native @media and @supports rules
  * using the css-custom-functions-polyfill transformation engine.
  *
  * @example
  * // Input CSS:
  * .example {
- *   color: if(media(max-width: 768px): blue; else: red);
+ *   color: if(@media (max-width: 768px) { result: blue; }; else: red);
  *   font-size: if(supports(display: grid): 1.2rem; else: 1rem);
  * }
  *
@@ -63,7 +63,7 @@ function postcssIfFunction(options = {}) {
 			// Collect all CSS text first
 			const cssText = root.toString();
 
-			// Check if there are any if() functions to transform
+			// Check if there are any CSS Custom Functions to transform
 			if (!cssText.includes('if(')) {
 				return;
 			}

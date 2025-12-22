@@ -92,7 +92,7 @@ jobs:
 
           ### `processCSSText(cssText, options?, element?)`
 
-          Manually process CSS text containing if() functions.
+          Manually process CSS text containing CSS Custom Functions.
 
           **Parameters:**
           - `cssText` (string): CSS text to process
@@ -103,7 +103,7 @@ jobs:
 
           ### `hasNativeSupport()`
 
-          Check if the browser has native CSS Custom Function support.
+          Check if the browser has native CSS Custom Functions support.
 
           **Returns:** boolean
 
@@ -131,7 +131,7 @@ jobs:
 
           ```css
           .element {
-            color: if(style(--custom-property): red; else: blue);
+            color: --custom-function(--custom-property) /* Define: @function --custom-function(--param) { result: var(--param, blue); } */;
           }
           ```
 
@@ -139,7 +139,7 @@ jobs:
 
           ```css
           .element {
-            background: if(media(min-width: 768px): lightblue; else: lightcoral);
+            background: if(@media (min-width: 768px) { result: lightblue; }; else: lightcoral);
           }
           ```
 
@@ -155,7 +155,7 @@ jobs:
 
           ```css
           .element {
-            color: if(media(min-width: 768px): blue; supports(color: red): red; else: black);
+            color: if(@media (min-width: 768px) { result: blue; }; supports(color: red): red; else: black);
           }
           ```
           EOF

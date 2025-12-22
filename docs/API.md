@@ -59,7 +59,7 @@ init({
 
 #### `processCSSText(cssText, options?, element?)`
 
-Manually process CSS text containing if() functions.
+Manually process CSS text containing CSS Custom Functions.
 
 **Parameters:**
 
@@ -74,14 +74,14 @@ Manually process CSS text containing if() functions.
 ```javascript
 const processedCSS = CSSIfPolyfill.processCSSText(`
   .button {
-    color: if(media(min-width: 768px): blue; else: red);
+    color: if(@media (min-width: 768px) { result: blue; }; else: red);
   }
 `);
 ```
 
 #### `hasNativeSupport()`
 
-Check if the browser has native CSS Custom Function support.
+Check if the browser has native CSS Custom Functions support.
 
 **Returns:** boolean
 
@@ -149,8 +149,8 @@ import { buildTimeTransform } from "css-custom-functions-polyfill";
 const result = buildTimeTransform(
 	`
   .card {
-    background: if(media(min-width: 768px): blue; else: gray);
-    font-size: if(style(--large): 24px; else: 16px);
+    background: if(@media (min-width: 768px) { result: blue; }; else: gray);
+    font-size: --custom-function(--large) /* Define: @function --custom-function(--param) { result: var(--param, 16px); } */;
   }
 `,
 	{ minify: true }
@@ -206,8 +206,10 @@ Test CSS custom properties:
 
 ```css
 .element {
-	color: if(style(--theme): var(--primary-color) ; else: blue);
-	font-size: if(style(--large-text): 24px; else: 16px);
+	color: --custom-function(--theme)
+		/* Define: @function --custom-function(--param) { result: var(--param, blue); } */;
+	font-size: --custom-function(--large-text)
+		/* Define: @function --custom-function(--param) { result: var(--param, 16px); } */;
 }
 ```
 
@@ -217,8 +219,8 @@ Responsive design conditions:
 
 ```css
 .element {
-	background: if(media(min-width: 768px): lightblue; else: lightcoral);
-	grid-columns: if(media(max-width: 480px): 1; else: 3);
+	background: if(@media (min-width: 768px) { result: lightblue; }; else: lightcoral);
+	grid-columns: if(@media (max-width: 480px) { result: 1; }; else: 3);
 }
 ```
 
@@ -242,7 +244,7 @@ Chain multiple conditions within a single if():
 ```css
 .element {
 	color: if(
-		media(min-width: 1200px): navy; media(min-width: 768px): blue;
+		@media (min-width: 1200px) { result: navy; }; @media (min-width: 768px) { result: blue; };
 			supports(color: red): red; else: black
 	);
 }
@@ -250,17 +252,19 @@ Chain multiple conditions within a single if():
 
 ### Complex Values
 
-Use if() functions within complex CSS values:
+Use CSS Custom Functions within complex CSS values:
 
 ```css
 .element {
 	background: linear-gradient(
-		if(media(min-width: 768px): to right; else: to bottom),
-		if(style(--dark-mode): #333; else: #fff),
-		if(style(--dark-mode): #000; else: #ccc)
+		if(@media (min-width: 768px) { result: to right; }; else: to bottom),
+		--custom-function(--dark-mode)
+			/* Define: @function --custom-function(--param) { result: var(--param, #fff); } */,
+		--custom-function(--dark-mode)
+			/* Define: @function --custom-function(--param) { result: var(--param, #ccc); } */
 	);
 
-	margin: if(media(max-width: 480px): 10px; else: 20px) auto;
+	margin: if(@media (max-width: 480px) { result: 10px; }; else: 20px) auto;
 }
 ```
 
@@ -286,13 +290,13 @@ Use if() functions within complex CSS values:
 ```css
 /* Good: Will be transformed to native CSS */
 .button {
-	background: if(media(min-width: 768px): blue; else: gray);
+	background: if(@media (min-width: 768px) { result: blue; }; else: gray);
 }
 
 /* Better: Combine related conditions */
 .button {
-	padding: if(media(max-width: 480px): 8px 12px; else: 12px 16px);
-	margin: if(media(max-width: 480px): 4px; else: 8px);
+	padding: if(@media (max-width: 480px) { result: 8px 12px; }; else: 12px 16px);
+	margin: if(@media (max-width: 480px) { result: 4px; }; else: 8px);
 }
 
 /* Best: Use build-time transformation */

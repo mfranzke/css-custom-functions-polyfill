@@ -34,7 +34,7 @@ describe('Media Query Tracking', () => {
 		// Create a style element to process
 		const styleElement = document.createElement('style');
 		const cssText =
-			'.test { color: if(media(min-width: 768px): blue; else: red); }';
+			'.test { color: if(@media (min-width: 768px) { result: blue; }; else: red); }';
 
 		// Process the CSS with element tracking
 		processCSSText(cssText, {}, styleElement);
@@ -53,7 +53,8 @@ describe('Media Query Tracking', () => {
 
 	test('should not register listeners for non-media conditions', () => {
 		const styleElement = document.createElement('style');
-		const cssText = '.test { color: if(style(--test): blue; else: red); }';
+		const cssText =
+			'.test { color: --custom-function(--test) /* Define: @function --custom-function(--param) { result: var(--param, red); } */; }';
 
 		processCSSText(cssText, {}, styleElement);
 
@@ -66,7 +67,7 @@ describe('Media Query Tracking', () => {
 		const styleElement1 = document.createElement('style');
 		const styleElement2 = document.createElement('style');
 		const cssText =
-			'.test { color: if(media(min-width: 768px): blue; else: red); }';
+			'.test { color: if(@media (min-width: 768px) { result: blue; }; else: red); }';
 
 		// Process the same media query twice
 		processCSSText(cssText, {}, styleElement1);
@@ -82,8 +83,8 @@ describe('Media Query Tracking', () => {
 	test('should handle multiple different media queries', () => {
 		const styleElement = document.createElement('style');
 		const cssText = `
-      .test1 { color: if(media(min-width: 768px): blue; else: red); }
-      .test2 { color: if(media(max-width: 480px): green; else: yellow); }
+      .test1 { color: if(@media (min-width: 768px) { result: blue; }; else: red); }
+      .test2 { color: if(@media (max-width: 480px) { result: green; }; else: yellow); }
     `;
 
 		processCSSText(cssText, {}, styleElement);
@@ -103,8 +104,8 @@ describe('Media Query Tracking', () => {
 	test('should clean up all media query listeners', () => {
 		const styleElement = document.createElement('style');
 		const cssText = `
-      .test1 { color: if(media(min-width: 768px): blue; else: red); }
-      .test2 { color: if(media(max-width: 480px): green; else: yellow); }
+      .test1 { color: if(@media (min-width: 768px) { result: blue; }; else: red); }
+      .test2 { color: if(@media (max-width: 480px) { result: green; }; else: yellow); }
     `;
 
 		processCSSText(cssText, {}, styleElement);
@@ -126,7 +127,7 @@ describe('Media Query Tracking', () => {
 		document.head.append(styleElement);
 
 		const originalCSS =
-			'.test { color: if(media(min-width: 768px): blue; else: red); }';
+			'.test { color: if(@media (min-width: 768px) { result: blue; }; else: red); }';
 
 		// Initially, media query matches (returns blue)
 		mockMediaQueryList.matches = true;
@@ -162,7 +163,7 @@ describe('Media Query Tracking', () => {
 		});
 
 		const cssText =
-			'.test { color: if(media(invalid-query): blue; else: red); }';
+			'.test { color: if(@media (invalid-query) { result: blue; }; else: red); }';
 
 		// Should not throw an error
 		expect(() => {

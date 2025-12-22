@@ -41,14 +41,14 @@ describe('Integrated CSS Custom Functions polyfill', () => {
 			expect(result.nativeCSS).toContain('color: red');
 
 			// Note: Consider if style() conditions should fall back to else clause during build time
-			// The fixture expects: .test{background: white;} but current implementation
+			// The fixture expects: .test{background: #ffffff;} but current implementation
 			// might defer style() conditions to runtime processing
 		});
 
 		test('keeps style() conditions for runtime processing', () => {
 			const css = `
 				.test {
-					color: if(style(--theme): var(--primary); else: blue);
+					color: --custom-function(--theme) /* Define: @function --custom-function(--param) { result: var(--param, blue); } */;
 				}
 			`;
 
@@ -61,8 +61,8 @@ describe('Integrated CSS Custom Functions polyfill', () => {
 		test('handles mixed conditions', () => {
 			const css = `
 				.test {
-					color: if(media(min-width: 768px): blue; else: red);
-					background: if(style(--dark-mode): black; else: white);
+					color: if(@media (min-width: 768px) { result: blue; }; else: red);
+					background: --custom-function(--dark-mode) /* Define: @function --custom-function(--param) { result: var(--param, white); } */;
 				}
 			`;
 
@@ -76,7 +76,7 @@ describe('Integrated CSS Custom Functions polyfill', () => {
 		test('minifies output when requested', () => {
 			const css = `
 				.test {
-					color: if(media(min-width: 768px): blue; else: red);
+					color: if(@media (min-width: 768px) { result: blue; }; else: red);
 				}
 			`;
 
@@ -90,7 +90,7 @@ describe('Integrated CSS Custom Functions polyfill', () => {
 		test('reports transformation statistics', () => {
 			const css = `
 				.test {
-					color: if(media(min-width: 768px): blue; else: red);
+					color: if(@media (min-width: 768px) { result: blue; }; else: red);
 					font-size: 16px;
 				}
 				.other {
@@ -110,7 +110,7 @@ describe('Integrated CSS Custom Functions polyfill', () => {
 		test('processes CSS text with native transformation enabled', () => {
 			const css = `
 				.test {
-					color: if(style(--theme): var(--primary); else: blue);
+					color: --custom-function(--theme) /* Define: @function --custom-function(--param) { result: var(--param, blue); } */;
 				}
 			`;
 
@@ -138,10 +138,10 @@ describe('Integrated CSS Custom Functions polyfill', () => {
 	});
 
 	describe('Complex scenarios', () => {
-		test('handles multiple conditions in single if() function', () => {
+		test('handles multiple conditions in single CSS Custom Function', () => {
 			const css = `
 				.test {
-					color: if(media(min-width: 1200px): blue; media(min-width: 768px): green; else: red);
+					color: if(@media (min-width: 1200px) { result: blue; }; @media (min-width: 768px) { result: green; }; else: red);
 				}
 			`;
 
@@ -154,7 +154,7 @@ describe('Integrated CSS Custom Functions polyfill', () => {
 		test('handles multiple if() in same property', () => {
 			const css = `
 				.test {
-					margin: if(media(min-width: 768px): 20px; else: 10px) if(supports(margin-inline: 0): 0; else: auto);
+					margin: if(@media (min-width: 768px) { result: 20px; }; else: 10px) if(supports(margin-inline: 0): 0; else: auto);
 				}
 			`;
 
@@ -172,7 +172,7 @@ describe('Integrated CSS Custom Functions polyfill', () => {
 				}
 
 				.test {
-					color: if(media(min-width: 768px): blue; else: red);
+					color: if(@media (min-width: 768px) { result: blue; }; else: red);
 				}
 
 				.footer {
@@ -190,10 +190,10 @@ describe('Integrated CSS Custom Functions polyfill', () => {
 	});
 
 	describe('Error handling', () => {
-		test('handles malformed if() functions gracefully', () => {
+		test('handles malformed CSS Custom Functions gracefully', () => {
 			const css = `
 				.test {
-					color: if(media(min-width: 768px): blue);
+					color: if(@media (min-width: 768px) { result: blue); };
 				}
 			`;
 

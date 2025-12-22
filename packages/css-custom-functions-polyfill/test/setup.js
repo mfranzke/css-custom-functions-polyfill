@@ -7,7 +7,7 @@ import { vi } from 'vitest';
 // Mock CSS.supports for testing
 globalThis.CSS = {
 	supports: vi.fn().mockImplementation((prop, value) => {
-		// If testing if() function syntax, return false (no native support)
+		// If testing CSS Custom Function syntax, return false (no native support)
 		if (value && value.includes('if(')) {
 			return false;
 		}

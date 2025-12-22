@@ -29,7 +29,7 @@ describe('Enhanced CSS Custom Functions polyfill - Shorthand Properties', () => 
 
 		test('should handle if() in font shorthand', () => {
 			const cssText =
-				'.test { font: if(media(width >= 768px): bold; else: normal) if(media(width >= 768px): 18px; else: 14px)/1.5 Arial, sans-serif; }';
+				'.test { font: if(@media (width >= 768px) { result: bold; }; else: normal) if(@media (width >= 768px) { result: 18px; }; else: 14px)/1.5 Arial, sans-serif; }';
 
 			globalThis.matchMedia.mockReturnValue({ matches: true });
 
@@ -41,7 +41,7 @@ describe('Enhanced CSS Custom Functions polyfill - Shorthand Properties', () => 
 
 		test('should handle if() in background shorthand', () => {
 			const cssText =
-				'.test { background: if(media(prefers-color-scheme: dark): #333; else: #fff) if(supports(background-image: linear-gradient(45deg, red, blue)): linear-gradient(45deg, red, blue); else: none) no-repeat center; }';
+				'.test { background: if(@media (prefers-color-scheme: dark) { result: #333; }; else: #fff) if(supports(background-image: linear-gradient(45deg, red, blue)): linear-gradient(45deg, red, blue); else: none) no-repeat center; }';
 
 			globalThis.matchMedia.mockReturnValue({ matches: false });
 			globalThis.CSS.supports.mockReturnValue(true);
@@ -54,7 +54,7 @@ describe('Enhanced CSS Custom Functions polyfill - Shorthand Properties', () => 
 
 		test('should handle if() in margin shorthand', () => {
 			const cssText =
-				'.test { margin: if(media(width >= 768px): 20px; else: 10px) if(supports(margin-inline: auto): auto; else: 0); }';
+				'.test { margin: if(@media (width >= 768px) { result: 20px; }; else: 10px) if(supports(margin-inline: auto): auto; else: 0); }';
 
 			globalThis.matchMedia.mockReturnValue({ matches: true });
 			globalThis.CSS.supports.mockReturnValue(true);
@@ -65,7 +65,7 @@ describe('Enhanced CSS Custom Functions polyfill - Shorthand Properties', () => 
 
 		test('should handle if() in box-shadow with multiple shadows', () => {
 			const cssText =
-				'.test { box-shadow: if(supports(box-shadow: 0 0 0 rgba(0,0,0,0.1)): 0 2px 4px rgba(0,0,0,0.1); else: none), if(media(width >= 768px): 0 8px 16px rgba(0,0,0,0.1); else: none); }';
+				'.test { box-shadow: if(supports(box-shadow: 0 0 0 rgba(0,0,0,0.1)): 0 2px 4px rgba(0,0,0,0.1); else: none), if(@media (width >= 768px) { result: 0 8px 16px rgba(0,0,0,0.1); }; else: none); }';
 
 			globalThis.CSS.supports.mockReturnValue(true);
 			globalThis.matchMedia.mockReturnValue({ matches: true });
@@ -80,7 +80,7 @@ describe('Enhanced CSS Custom Functions polyfill - Shorthand Properties', () => 
 	describe('Multiple Conditions in Shorthand', () => {
 		test('should handle multiple conditions within shorthand if()', () => {
 			const cssText =
-				'.test { border: if(media(width >= 1200px): 4px; media(width >= 768px): 2px; else: 1px) solid red; }';
+				'.test { border: if(@media (width >= 1200px) { result: 4px; }; @media (width >= 768px) { result: 2px; }; else: 1px) solid red; }';
 
 			globalThis.matchMedia.mockImplementation((query) => ({
 				matches: query.includes('768px') && !query.includes('1200px')
@@ -92,7 +92,7 @@ describe('Enhanced CSS Custom Functions polyfill - Shorthand Properties', () => 
 
 		test('should handle complex font shorthand with multiple conditions', () => {
 			const cssText =
-				'.test { font: if(media(width >= 1200px): bold; media(width >= 768px): 600; else: normal) if(media(width >= 768px): 18px; else: 14px)/1.5 system-ui, sans-serif; }';
+				'.test { font: if(@media (width >= 1200px) { result: bold; }; @media (width >= 768px) { result: 600; }; else: normal) if(@media (width >= 768px) { result: 18px; }; else: 14px)/1.5 system-ui, sans-serif; }';
 
 			globalThis.matchMedia.mockImplementation((query) => ({
 				matches: query.includes('768px')
@@ -120,7 +120,7 @@ describe('Enhanced CSS Custom Functions polyfill - Shorthand Properties', () => 
 	describe('Complex Parsing Scenarios', () => {
 		test('should handle if() with quoted values containing semicolons', () => {
 			const cssText =
-				'.test { content: if(media(width >= 768px): "Hello; World"; else: "Hi"); }';
+				'.test { content: if(@media (width >= 768px) { result: "Hello; }; World"; else: "Hi"); }';
 
 			globalThis.matchMedia.mockReturnValue({ matches: true });
 
@@ -142,7 +142,7 @@ describe('Enhanced CSS Custom Functions polyfill - Shorthand Properties', () => 
 
 		test('should handle empty if() results in shorthand', () => {
 			const cssText =
-				'.test { margin: if(false: 20px) if(media(width >= 768px): 10px; else: 5px); }';
+				'.test { margin: if(false: 20px) if(@media (width >= 768px) { result: 10px; }; else: 5px); }';
 
 			globalThis.matchMedia.mockReturnValue({ matches: true });
 
@@ -154,7 +154,7 @@ describe('Enhanced CSS Custom Functions polyfill - Shorthand Properties', () => 
 	describe('Error Handling', () => {
 		test('should handle malformed if() in shorthand gracefully', () => {
 			const cssText =
-				'.test { margin: if(invalid-syntax) if(media(width >= 768px): 10px; else: 5px); }';
+				'.test { margin: if(invalid-syntax) if(@media (width >= 768px) { result: 10px; }; else: 5px); }';
 
 			globalThis.matchMedia.mockReturnValue({ matches: true });
 
@@ -165,7 +165,7 @@ describe('Enhanced CSS Custom Functions polyfill - Shorthand Properties', () => 
 		test('should handle complex CSS with multiple properties', () => {
 			const cssText = `
         .test {
-          margin: if(media(width >= 768px): 20px; else: 10px) auto;
+          margin: if(@media (width >= 768px) { result: 20px; }; else: 10px) auto;
           border: if(supports(border-style: dashed): 2px; else: 1px) if(supports(border-style: dashed): dashed; else: solid) red;
           transform: if(supports(transform: scale(1)): scale(1.1); else: none) if(supports(transform: rotate(0deg)): rotate(5deg); else: none);
         }
@@ -185,14 +185,14 @@ describe('Enhanced CSS Custom Functions polyfill - Shorthand Properties', () => 
 	describe('Public API with Enhanced Features', () => {
 		test('should process shorthand via processCSSText function', () => {
 			const result = processCSSText(
-				'.test { border: if(style(--true): 2px; else: 1px) if(style(--true): solid; else: dashed) red; }'
+				'.test { border: --custom-function(--true) /* Define: @function --custom-function(--param) { result: var(--param, 1px); } */ --custom-function(--true) /* Define: @function --custom-function(--param) { result: var(--param, dashed); } */ red; }'
 			);
 			expect(result).toBe('.test { border: 1px dashed red; }');
 		});
 
 		test('should handle complex shorthand via processCSSText function', () => {
 			const result = processCSSText(
-				'.test { font: if(style(--true): bold; else: normal) if(style(--true): 18px; else: 14px)/1.5 Arial; }'
+				'.test { font: --custom-function(--true) /* Define: @function --custom-function(--param) { result: var(--param, normal); } */ --custom-function(--true) /* Define: @function --custom-function(--param) { result: var(--param, 14px); } *//1.5 Arial; }'
 			);
 			expect(result).toBe('.test { font: normal 14px/1.5 Arial; }');
 		});

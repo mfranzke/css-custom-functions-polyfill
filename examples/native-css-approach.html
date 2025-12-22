@@ -86,18 +86,18 @@
 			/* Complex example with multiple conditions */
 			.complex-example {
 				background: if(
-					media(width >=1200px): linear-gradient(
+					@media (width >=1200px) { result: linear-gradient(
 							45deg,
 							#007bff,
 							#0056b3
 						)
-						;
-						media(width >=768px): linear-gradient(
+						; };
+						@media (width >=768px) { result: linear-gradient(
 							45deg,
 							#28a745,
 							#1e7e34
 						)
-						; else: linear-gradient(45deg, #dc3545, #a71d2a) ;
+						; }; else: linear-gradient(45deg, #dc3545, #a71d2a) ;
 				);
 			}
 
@@ -123,7 +123,8 @@
 			/* Style queries would still need runtime processing */
 			.theme-example {
 				/* This would still need JavaScript for custom property evaluation */
-				color: if(style(--theme: dark): #ffffff; else: #000000);
+				color: --custom-function(--theme: dark)
+					/* Define: @function --custom-function(--param) { result: var(--param, #000000); } */;
 			}
 
 			/* But could be optimized with CSS custom properties */
@@ -236,8 +237,8 @@
 			<h2>Implementation Strategy</h2>
 			<ol>
 				<li>
-					<strong>Parse CSS:</strong> Extract if() functions from
-					stylesheets
+					<strong>Parse CSS:</strong> Extract CSS Custom Functions
+					from stylesheets
 				</li>
 				<li>
 					<strong>Transform media():</strong> Convert to @media
@@ -262,7 +263,7 @@
 			// Example of how the transformation would work
 			const originalCSS = `
             .element {
-                color: if(media(width >= 768px): blue; else: red);
+                color: if(@media (width >= 768px) { result: blue; }; else: red);
                 display: if(supports(display: subgrid): subgrid; else: grid);
             }
         `;

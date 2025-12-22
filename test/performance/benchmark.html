@@ -5,33 +5,34 @@
 		<style>
 			/* Test styles with various if() conditions */
 			.test-element-1 {
-				color: if(media(min-width: 768px): blue; else: red);
+				color: if(@media (min-width: 768px) { result: blue; }; else: red);
 			}
 
 			.test-element-2 {
-				background: if(supports(display: grid): white; else: gray);
+				background: if(supports(display: grid): #ffffff; else: gray);
 			}
 
 			.test-element-3 {
-				font-size: if(style(--large): 18px; else: 14px);
+				font-size: --custom-function(--large)
+					/* Define: @function --custom-function(--param) { result: var(--param, 14px); } */;
 			}
 
 			.test-element-4 {
-				padding: if(media(max-width: 480px): 10px; else: 20px);
+				padding: if(@media (max-width: 480px) { result: 10px; }; else: 20px);
 			}
 
 			.test-element-5 {
-				margin: if(media(min-width: 1024px): 30px; else: 15px);
+				margin: if(@media (min-width: 1024px) { result: 30px; }; else: 15px);
 			}
 
 			/* Multiple conditions */
 			.test-complex {
 				color: if(
-					media(min-width: 768px): blue; supports(color: red): red;
+					@media (min-width: 768px) { result: blue; }; supports(color: red): red;
 						else: black
 				);
 				background: if(
-					media(orientation: landscape): white; else: lightgray
+					@media (orientation: landscape) { result: #ffffff; }; else: lightgray
 				);
 			}
 		</style>
@@ -73,9 +74,9 @@
 				// Test processing time
 				const testCSS = `
 	                      .performance-test {
-	                          color: if(media(min-width: 768px): blue; else: red);
-	                          background: if(supports(display: grid): white; else: gray);
-	                          font-size: if(style(--large): 18px; else: 14px);
+	                          color: if(@media (min-width: 768px) { result: blue; }; else: red);
+	                          background: if(supports(display: grid): #ffffff; else: gray);
+	                          font-size: --custom-function(--large) /* Define: @function --custom-function(--param) { result: var(--param, 14px); } */;
 	                      }
 	                  `;
 

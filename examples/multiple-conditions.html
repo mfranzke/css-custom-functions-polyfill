@@ -66,7 +66,7 @@
 				padding: 20px;
 				border: 2px solid #007acc;
 				border-radius: 10px;
-				background: white;
+				background: #ffffff;
 				margin: 15px 0;
 			}
 
@@ -81,7 +81,7 @@
 				border: none;
 				border-radius: 5px;
 				background-color: #007acc;
-				color: white;
+				color: #ffffff;
 				cursor: pointer;
 				font-size: 16px;
 			}
@@ -98,24 +98,24 @@
 					style(--scheme: ice): linear-gradient(
 							135deg,
 							#caf0f8,
-							white,
+							#ffffff,
 							#caf0f8
 						)
 						;
 						style(--scheme: fire): linear-gradient(
 							135deg,
 							#ffc971,
-							white,
+							#ffffff,
 							#ffc971
 						)
 						;
 						style(--scheme: earth): linear-gradient(
 							135deg,
 							#8fbc8f,
-							white,
+							#ffffff,
 							#8fbc8f
 						)
-						; else: linear-gradient(135deg, #e0e0e0, white, #e0e0e0)
+						; else: linear-gradient(135deg, #e0e0e0, #ffffff, #e0e0e0)
 						;
 				);
 				padding: 30px;
@@ -182,7 +182,7 @@
 					);
 				padding: 20px;
 				margin: 20px 0;
-				background: white;
+				background: #ffffff;
 				border-radius: 8px;
 				text-align: center;
 			}
@@ -190,17 +190,17 @@
 			/* 5. Media query combinations */
 			.responsive-demo {
 				padding: if(
-					media(width >=1200px): 40px; media(width >=768px): 30px;
-						media(width >=480px): 20px; else: 15px;
+					@media (width >=1200px) { result: 40px; }; @media (width >=768px) { result: 30px; };
+						@media (width >=480px) { result: 20px; }; else: 15px;
 				);
 				font-size: if(
-					media(width >=1200px): 20px; media(width >=768px): 18px;
-						media(width >=480px): 16px; else: 14px;
+					@media (width >=1200px) { result: 20px; }; @media (width >=768px) { result: 18px; };
+						@media (width >=480px) { result: 16px; }; else: 14px;
 				);
 				background: if(
-					media(width >=1200px): #e0f2fe;
-						media(width >=768px): #f0f9ff;
-						media(width >=480px): #f8fafc; else: #f1f5f9;
+					@media (width >=1200px) { result: #e0f2fe; };
+						@media (width >=768px) { result: #f0f9ff; };
+						@media (width >=480px) { result: #f8fafc; }; else: #f1f5f9;
 				);
 				border-radius: 10px;
 				text-align: center;
@@ -228,18 +228,18 @@
 			/* 7. Animation preferences */
 			.animation-demo {
 				transition: if(
-					media(prefers-reduced-motion: reduce): none;
+					@media (prefers-reduced-motion: reduce) { result: none; };
 						supports(transition): all 0.3s ease; else: none;
 				);
 				transform: if(
-					media(prefers-reduced-motion: reduce): none;
+					@media (prefers-reduced-motion: reduce) { result: none; };
 						supports(transform): scale(1) ; else: none;
 				);
 				background: if(
-					media(prefers-reduced-motion: reduce): #fbbf24;
+					@media (prefers-reduced-motion: reduce) { result: #fbbf24; };
 						else: #3b82f6;
 				);
-				color: white;
+				color: #ffffff;
 				padding: 20px;
 				border-radius: 10px;
 				text-align: center;
@@ -248,7 +248,7 @@
 
 			.animation-demo:hover {
 				transform: if(
-					media(prefers-reduced-motion: reduce): none;
+					@media (prefers-reduced-motion: reduce) { result: none; };
 						supports(transform): scale(1.05) ; else: none;
 				);
 			}
@@ -259,7 +259,8 @@
 		<div class="container">
 			<h1>CSS Custom Function Multiple Conditions Examples</h1>
 			<p style="text-align: center; font-size: 18px; color: #666">
-				Demonstrating multiple conditions within a single if() function
+				Demonstrating multiple conditions within a single CSS Custom
+				Function
 			</p>
 
 			<div class="controls">
@@ -287,11 +288,11 @@
 				<h2>1. Theme-Based Background Gradients</h2>
 				<div class="code-block">
 					background: if( style(--scheme: ice):
-					linear-gradient(135deg, #caf0f8, white, #caf0f8);
+					linear-gradient(135deg, #caf0f8, #ffffff, #caf0f8);
 					style(--scheme: fire): linear-gradient(135deg, #ffc971,
-					white, #ffc971); style(--scheme: earth):
-					linear-gradient(135deg, #8fbc8f, white, #8fbc8f); else:
-					linear-gradient(135deg, #e0e0e0, white, #e0e0e0); );
+					#ffffff, #ffc971); style(--scheme: earth):
+					linear-gradient(135deg, #8fbc8f, #ffffff, #8fbc8f); else:
+					linear-gradient(135deg, #e0e0e0, #ffffff, #e0e0e0); );
 				</div>
 				<div class="example-result theme-card">
 					This card's background changes based on the --scheme custom
@@ -342,8 +343,8 @@
 			<div class="demo-section">
 				<h2>5. Responsive Design with Multiple Breakpoints</h2>
 				<div class="code-block">
-					padding: if( media(width >= 1200px): 40px; media(width >=
-					768px): 30px; media(width >= 480px): 20px; else: 15px; );
+					padding: if( @media (width >= 1200px) { result: 40px; }; @media (width >=
+					768px) { result: 30px; }; @media (width >= 480px) { result: 20px; }; else: 15px; );
 				</div>
 				<div class="example-result responsive-demo">
 					This element's padding and styling adapt to different screen
@@ -366,7 +367,7 @@
 			<div class="demo-section">
 				<h2>7. Accessibility-Aware Animations</h2>
 				<div class="code-block">
-					transition: if( media(prefers-reduced-motion: reduce): none;
+					transition: if( @media (prefers-reduced-motion: reduce) { result: none; };
 					supports(transition): all 0.3s ease; else: none; );
 				</div>
 				<div class="example-result animation-demo">
@@ -408,8 +409,8 @@
                 );
 
                 color: if(
-                    style(--theme: dark): white;
-                    style(--theme: light): black;
+                    style(--theme: dark): #ffffff;
+                    style(--theme: light): #000000;
                     else: gray;
                 );
             }

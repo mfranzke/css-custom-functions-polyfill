@@ -8,11 +8,11 @@ import {
 
 describe('CSS Transform Engine - Detailed Testing', () => {
 	describe('if() Function Extraction', () => {
-		test('extracts simple if() functions correctly', () => {
+		test('extracts simple CSS Custom Functions correctly', () => {
 			const testCases = [
-				'if(media(min-width: 768px): blue; else: red)',
+				'if(@media (min-width: 768px) { result: blue; }; else: red)',
 				'if(supports(display: grid): transparent; else: white)',
-				'if(style(--large): 24px; else: 16px)'
+				'--custom-function(--large) /* Define: @function --custom-function(--param) { result: var(--param, 16px); } */'
 			];
 
 			for (const testCase of testCases) {
@@ -23,14 +23,14 @@ describe('CSS Transform Engine - Detailed Testing', () => {
 			}
 		});
 
-		test('extracts multiple if() functions from complex values', () => {
+		test('extracts multiple CSS Custom Functions from complex values', () => {
 			const complexValue =
-				'if(media(min-width: 768px): blue; else: red) if(supports(grid): 1fr; else: auto)';
+				'if(@media (min-width: 768px) { result: blue; }; else: red) if(supports(grid): 1fr; else: auto)';
 			const extracted = extractIfFunctions(complexValue);
 
 			expect(extracted).toHaveLength(2);
 			expect(extracted[0].fullFunction).toBe(
-				'if(media(min-width: 768px): blue; else: red)'
+				'if(@media (min-width: 768px) { result: blue; }; else: red)'
 			);
 			expect(extracted[1].fullFunction).toBe(
 				'if(supports(grid): 1fr; else: auto)'
@@ -51,7 +51,7 @@ describe('CSS Transform Engine - Detailed Testing', () => {
 
 	describe('if() Function Parsing', () => {
 		test('parses media() conditions correctly', () => {
-			const content = 'media(min-width: 768px): blue; else: red';
+			const content = '@media (min-width: 768px) { result: blue; }; else: red';
 			const parsed = parseIfFunction(content);
 
 			expect(parsed).toEqual({
@@ -103,7 +103,7 @@ describe('CSS Transform Engine - Detailed Testing', () => {
 
 		test('handles complex values with spaces and punctuation', () => {
 			const content =
-				'media(min-width: 768px): linear-gradient(to right, blue, navy); else: solid red';
+				'@media (min-width: 768px) { result: linear-gradient(to right, blue, navy); }; else: solid red';
 			const parsed = parseIfFunction(content);
 
 			expect(parsed.conditions[0].value).toBe(
@@ -112,10 +112,10 @@ describe('CSS Transform Engine - Detailed Testing', () => {
 			expect(parsed.elseValue).toBe('solid red');
 		});
 
-		test('throws error for malformed if() functions', () => {
+		test('throws error for malformed CSS Custom Functions', () => {
 			expect(() =>
-				parseIfFunction('media(min-width: 768px): blue')
-			).toThrow('missing else clause');
+				parseIfFunction('@media (min-width: 768px) { result: blue')
+			).toThrow('missing else clause'); };
 			expect(() =>
 				parseIfFunction('invalid-condition: blue; else: red')
 			).toThrow('unknown condition type');
@@ -130,7 +130,7 @@ describe('CSS Transform Engine - Detailed Testing', () => {
 			const result = transformPropertyToNative(
 				'.test',
 				'color',
-				'if(media(min-width: 768px): blue; else: red)'
+				'if(@media (min-width: 768px) { result: blue; }; else: red)'
 			);
 
 			expect(result.nativeCSS).toContain('@media (min-width: 768px)');
@@ -156,17 +156,17 @@ describe('CSS Transform Engine - Detailed Testing', () => {
 			const result = transformPropertyToNative(
 				'.test',
 				'font-size',
-				'if(style(--large): 24px; else: 16px)'
+				'--custom-function(--large) /* Define: @function --custom-function(--param) { result: var(--param, 16px); } */'
 			);
 
 			expect(result.hasRuntimeRules).toBe(true);
 			expect(result.runtimeCSS).toContain(
-				'font-size: if(style(--large): 24px; else: 16px)'
+				'font-size: --custom-function(--large) /* Define: @function --custom-function(--param) { result: var(--param, 16px); } */'
 			);
 			expect(result.nativeCSS).toBe('');
 		});
 
-		test('handles properties without if() functions', () => {
+		test('handles properties without CSS Custom Functions', () => {
 			const result = transformPropertyToNative('.test', 'margin', '20px');
 
 			expect(result.nativeCSS).toBe('.test { margin: 20px; }');
@@ -178,14 +178,14 @@ describe('CSS Transform Engine - Detailed Testing', () => {
 		test('transforms complete CSS with mixed conditions', () => {
 			const css = `
         .card {
-          background: if(media(min-width: 768px): blue; else: gray);
+          background: if(@media (min-width: 768px) { result: blue; }; else: gray);
           display: if(supports(display: grid): grid; else: block);
-          font-size: if(style(--large): 24px; else: 16px);
+          font-size: --custom-function(--large) /* Define: @function --custom-function(--param) { result: var(--param, 16px); } */;
         }
 
         .button {
           padding: 10px;
-          margin: if(media(max-width: 480px): 5px; else: 10px);
+          margin: if(@media (max-width: 480px) { result: 5px; }; else: 10px);
         }
       `;
 
@@ -208,11 +208,11 @@ describe('CSS Transform Engine - Detailed Testing', () => {
 			expect(result.stats.transformedRules).toBeGreaterThan(0);
 		});
 
-		test('handles CSS with no if() functions', () => {
+		test('handles CSS with no CSS Custom Functions', () => {
 			const css = `
         .normal {
           color: blue;
-          background: white;
+          background: #ffffff;
         }
       `;
 
@@ -259,7 +259,7 @@ describe('CSS Transform Engine - Detailed Testing', () => {
         @import url('fonts.css');
 
         .test {
-          color: if(media(min-width: 768px): blue; else: red);
+          color: if(@media (min-width: 768px) { result: blue; }; else: red);
         }
 
         @keyframes slide {

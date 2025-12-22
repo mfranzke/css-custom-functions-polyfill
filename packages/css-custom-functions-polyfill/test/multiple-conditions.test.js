@@ -109,9 +109,9 @@ describe('CSS Custom Functions polyfill - Multiple Conditions', () => {
 
 			const cssText = `.test {
         padding: if(
-          media(width >= 1200px): 40px;
-          media(width >= 768px): 30px;
-          media(width >= 480px): 20px;
+          @media (width >= 1200px) { result: 40px; };
+          @media (width >= 768px) { result: 30px; };
+          @media (width >= 480px) { result: 20px; };
           else: 15px;
         );
       }`;
@@ -153,10 +153,10 @@ describe('CSS Custom Functions polyfill - Multiple Conditions', () => {
 
 			const cssText = `.test {
         color: if(
-          style(--theme: dark): white;
-          media(width >= 768px): blue;
+          style(--theme: dark): #ffffff;
+          @media (width >= 768px) { result: blue; };
           supports(color: red): red;
-          else: black;
+          else: #000000;
         );
       }`;
 
@@ -225,8 +225,8 @@ describe('CSS Custom Functions polyfill - Multiple Conditions', () => {
 
 			const cssText = `.test {
         color: if(
-          style(--theme: dark): white;
-          style(--theme: light): black;
+          style(--theme: dark): #ffffff;
+          style(--theme: light): #000000;
         );
       }`;
 
@@ -238,7 +238,7 @@ describe('CSS Custom Functions polyfill - Multiple Conditions', () => {
 	});
 
 	describe('Shorthand Property Integration', () => {
-		test('should work with multiple if() functions in shorthand', () => {
+		test('should work with multiple CSS Custom Functions in shorthand', () => {
 			const mockComputedStyle = {
 				getPropertyValue: vi.fn().mockImplementation((prop) => {
 					if (prop === '--scheme') {
@@ -277,12 +277,12 @@ describe('CSS Custom Functions polyfill - Multiple Conditions', () => {
 
 			const cssText = `.test {
         font: if(
-          media(width >= 1200px): bold;
-          media(width >= 768px): 600;
+          @media (width >= 1200px) { result: bold; };
+          @media (width >= 768px) { result: 600; };
           else: normal;
         ) if(
           supports(font-size: clamp(1rem, 5vw, 2rem)): clamp(1rem, 5vw, 2rem);
-          media(width >= 768px): 18px;
+          @media (width >= 768px) { result: 18px; };
           else: 14px;
         )/1.5 system-ui, sans-serif;
       }`;
@@ -299,8 +299,8 @@ describe('CSS Custom Functions polyfill - Multiple Conditions', () => {
 			const cssText = `.test {
         color: if(
           invalid-condition-format;
-          style(--theme: dark): white;
-          else: black;
+          style(--theme: dark): #ffffff;
+          else: #000000;
         );
       }`;
 
@@ -327,9 +327,9 @@ describe('CSS Custom Functions polyfill - Multiple Conditions', () => {
 		test('should handle empty conditions', () => {
 			const cssText = `.test {
         color: if(
-          style(--theme: dark): white;
+          style(--theme: dark): #ffffff;
           ;
-          else: black;
+          else: #000000;
         );
       }`;
 
@@ -364,15 +364,15 @@ describe('CSS Custom Functions polyfill - Multiple Conditions', () => {
 			const cssText = `
         .card {
           background: if(
-            style(--scheme: ice): linear-gradient(135deg, #caf0f8, white, #caf0f8);
-            style(--scheme: fire): linear-gradient(135deg, #ffc971, white, #ffc971);
-            style(--scheme: earth): linear-gradient(135deg, #8fbc8f, white, #8fbc8f);
-            else: linear-gradient(135deg, #e0e0e0, white, #e0e0e0);
+            style(--scheme: ice): linear-gradient(135deg, #caf0f8, #ffffff, #caf0f8);
+            style(--scheme: fire): linear-gradient(135deg, #ffc971, #ffffff, #ffc971);
+            style(--scheme: earth): linear-gradient(135deg, #8fbc8f, #ffffff, #8fbc8f);
+            else: linear-gradient(135deg, #e0e0e0, #ffffff, #e0e0e0);
           );
 
           border: if(
-            media(width >= 1200px): 3px;
-            media(width >= 768px): 2px;
+            @media (width >= 1200px) { result: 3px; };
+            @media (width >= 768px) { result: 2px; };
             else: 1px;
           ) solid if(
             style(--scheme: ice): #0ea5e9;
@@ -385,7 +385,7 @@ describe('CSS Custom Functions polyfill - Multiple Conditions', () => {
 
 			const result = processCSSText(cssText);
 			expect(result).toContain(
-				'linear-gradient(135deg, #e0e0e0, white, #e0e0e0)'
+				'linear-gradient(135deg, #e0e0e0, #ffffff, #e0e0e0)'
 			);
 			expect(result).toContain('#6b7280');
 		});

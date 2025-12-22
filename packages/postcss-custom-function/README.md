@@ -4,7 +4,7 @@
 [![npm version](https://badge.fury.io/js/postcss-custom-function.svg)](https://badge.fury.io/js/postcss-custom-function)
 [![Build Status](https://github.com/mfranzke/css-custom-functions-polyfill/workflows/CI/badge.svg)](https://github.com/mfranzke/css-custom-functions-polyfill/actions)
 
-A [PostCSS](https://postcss.org/) plugin for transforming CSS `if()` functions into native CSS `@media` and `@supports` rules at build time.
+A [PostCSS](https://postcss.org/) plugin for transforming CSS Custom Functionss into native CSS `@media` and `@supports` rules at build time.
 
 This plugin is part of the [css-custom-functions-polyfill](https://github.com/mfranzke/css-custom-functions-polyfill/tree/main/packages/css-custom-functions-polyfill/) project and provides build-time transformation of conditional CSS, eliminating the need for runtime JavaScript processing when using only `media()` and `supports()` functions.
 
@@ -39,7 +39,7 @@ import postcssIfFunction from "postcss-custom-function";
 
 const css = `
 .example {
-  color: if(media(max-width: 768px): blue; else: red);
+  color: if(@media (max-width: 768px) { result: blue; }; else: red);
   font-size: if(supports(display: grid): 1.2rem; else: 1rem);
 }
 `;
@@ -292,7 +292,7 @@ For complete CSS `if()` support including `style()` functions, combine this plug
 
 ## Performance Considerations
 
-This plugin is designed for optimal build-time performance, transforming CSS Custom Function functions to native CSS without runtime overhead. However, there are some architectural considerations:
+This plugin is designed for optimal build-time performance, transforming CSS Custom Functionss to native CSS without runtime overhead. However, there are some architectural considerations:
 
 ### Current Implementation
 
@@ -317,6 +317,6 @@ MIT © [Maximilian Franzke](https://github.com/mfranzke)
 
 ## Related
 
-- [css-custom-functions-polyfill](https://github.com/mfranzke/css-custom-functions-polyfill/tree/main/packages/css-custom-functions-polyfill/) - Runtime polyfill for CSS Custom Function functions
+- [css-custom-functions-polyfill](https://github.com/mfranzke/css-custom-functions-polyfill/tree/main/packages/css-custom-functions-polyfill/) - Runtime polyfill for CSS Custom Functionss
 - [PostCSS](https://postcss.org/) - Tool for transforming CSS with JavaScript
 - [CSS Conditional Rules](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_conditional_rules) - MDN documentation for @media and @supports
