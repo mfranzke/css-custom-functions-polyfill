@@ -44,9 +44,9 @@ Initializes the CSS Custom Functions polyfill with optional configuration.
 **Parameters:**
 
 - `options` (optional): Configuration object
-    - `debug` (boolean): Enable debug logging (default: false)
-    - `autoInit` (boolean): Auto-initialize on DOMContentLoaded (default: true)
-    - `useNativeTransform` (boolean): Enable hybrid native transformation (default: true)
+    - `debug` (boolean): Enable debug logging (default: `false`)
+    - `autoInit` (boolean): Auto-initialize on DOMContentLoaded (default: `true`)
+    - `useNativeTransform` (boolean): Enable hybrid native transformation (default: `true`)
 
 **Example:**
 
@@ -95,7 +95,7 @@ if (!CSSIfPolyfill.hasNativeSupport()) {
 
 #### `refresh()`
 
-Manually trigger processing of existing stylesheets.
+Manually re-process all stylesheets in the document. Useful after dynamically inserting new `<style>` elements that the mutation observer may not have caught.
 
 **Example:**
 
@@ -125,7 +125,7 @@ Transform CSS at build time to generate native CSS where possible.
 
 - `cssText` (string): CSS text to transform
 - `options` (optional): Transform options
-    - `minify` (boolean): Minify the output CSS (default: false)
+    - `minify` (boolean): Minify the output CSS (default: `false`)
 
 **Returns:** Transform result object
 
@@ -151,8 +151,7 @@ const result = buildTimeTransform(
   .card {
     background: if(media(min-width: 768px): blue; else: gray);
     font-size: if(style(--large): 24px; else: 16px);
-  }
-`,
+  }`,
 	{ minify: true }
 );
 
@@ -354,4 +353,4 @@ const optimized = buildTimeTransform(cssText);
 
 ## Examples
 
-See the `/examples` directory for complete working demonstrations of all features.
+See the [`/examples`](../examples/) directory for complete working demonstrations.

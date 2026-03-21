@@ -5,7 +5,7 @@
 This is a JavaScript polyfill and PostCSS plugin for [CSS Custom Function functionality](https://developer.mozilla.org/en-US/docs/Web/CSS/if). The polyfill provides browser support for the CSS Custom Function function with style(), media(), and supports() conditions as specified in the WCAG (Web Content Accessibility Guidelines).
 
 <!-- TODO: Update this section if the official specification changes.
-https://drafts.csswg.org/css-values-5/#if-notation -->
+https://drafts.csswg.org/css-mixins-1/ -->
 
 ## Official WCAG CSS Custom Function Function Specification
 
@@ -443,6 +443,7 @@ The value of the [`result`](https://drafts.csswg.org/css-mixins-1/#descdef-funct
 
 - `packages/css-custom-functions-polyfill/` - Main JavaScript polyfill
 - `packages/postcss-custom-function/` - PostCSS plugin for build-time transformation
+- `packages/stylelint-config-custom-functions/` - Stylelint configuration for linting CSS custom function usage
 
 ### Key Files
 
@@ -469,7 +470,7 @@ When working with CSS Custom Function functions, always follow the official WCAG
 - Follow XO linting rules (extends ESLint strict configuration)
 - Use `/* eslint-disable rule-name */` blocks only when necessary for browser automation
 - Prefer functional programming patterns
-- Use meaningful variable names and comprehensive JSDoc comments
+- Use meaningful variable names and comprehensive JSDoc comments, instead of TypeScript within our source code, but still provide type definitions for public APIs
 
 ### Testing Requirements
 
@@ -526,7 +527,8 @@ When working with CSS Custom Function functions, always follow the official WCAG
 3. **Always** run the full test suite including browser validation
 4. **Always** update documentation when changing public APIs
 5. **Always** bear in mind that the developer's main job is to read, not write, code. Therefore, avoid unnecessary complexity, abbreviations and short forms of parameters, for example in CLI usage.
-6. **Consider** performance impact on large stylesheets and DOM trees
+6. **Always** try to avoid setting up separate fixtures for each output (Polyfill, PostCSS plugin or Stylelint plugin) and use the same fixture for all of them if possible. If there are any differences, try changing the fixture so that it can be used for all of them. For example, change the colour values in the fixture so that they produce the same output.
+7. **Consider** performance impact on large stylesheets and DOM trees
 
 This project aims to provide a complete, specification-compliant implementation of CSS Custom Function functionality for browsers that don't yet support it natively.
 
